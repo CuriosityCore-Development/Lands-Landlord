@@ -1,0 +1,69 @@
+# =====================================================================================================================
+#                                 ╔═══════════════════════════════════════════════╗
+#                                           LANDLORD CONFIGURATION FILE
+#                                 ╚═══════════════════════════════════════════════╝
+# =====================================================================================================================
+#
+# This config file is for the LandLord Plugin.
+# The LandLord Plugin is an add-on for the "Lands Plugin" that aims to make the automation of player activity and
+# ownership limits more user-friendly to control.
+#
+# This config was generated for version X.XX.X
+#
+# For more information on each option, see the plugin documentation at: XXXXXXXXXXXXXXXXXX.
+#
+# =====================================================================================================================
+#
+#
+# =======================================
+#               Scan Options
+# =======================================
+
+# These options are used to define if scans should be conducted automatically or not, and what time period said
+# scans should be conducted over.
+#
+# activity_scan: Scans to see if all lands have at least 1 player who is above the minimum acitvity requirements.
+#
+# activity_requirement: Number of minutes (per scan period) of activity needed by a player.
+#
+# activity_range: Number of days that a player's activity will be analysed over.
+#
+# scan_period: Determines the number of hours between individual scans.
+#
+# delay_on_enable: Determines how long, in minutes after a restart the plugin will begin the initial scan with a
+#                  minimum of 10 minutes.
+
+# =======================================
+activity_scan:
+  enabled: true
+
+  activity_requirement: 90
+
+  activity_range: 30
+
+  scan_period: 1
+
+  delay_on_enable: 10
+
+
+
+# =======================================
+#      Land Ownership Limit Options
+# =======================================
+
+# These options are used to define limits to how many lands a player can own at any given time. This limit will
+# prevent the creation of new lands by the player, or transferal (automatically or not) of lands to said player.
+#
+# activity_scan: Scans to see if all lands have at least 1 player who is above the minimum acitvity requirements.
+#
+# scan_period: Determines the number of minutes inbetween individual scans.
+#
+# delay_on_enable: Determines how long, in minutes after a restart the plugin will begin the initial scan with a
+#                  minimum of 10 minutes.
+
+# =======================================
+owner_limit:
+  enabled: true
+
+  land_ownership_limit: 3
+

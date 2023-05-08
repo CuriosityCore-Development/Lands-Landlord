@@ -1,0 +1,11 @@
+module:Landlord
+io.curiositycore.landlord
+io.curiositycore.landlord.commands
+io.curiositycore.landlord.events
+io.curiositycore.landlord.util.api.coreprotect
+io.curiositycore.landlord.util.api.lands
+io.curiositycore.landlord.util.config
+io.curiositycore.landlord.util.maths
+io.curiositycore.landlord.util.messages
+io.curiositycore.landlord.util.messages.enums
+io.curiositycore.landlord.util.tasks
