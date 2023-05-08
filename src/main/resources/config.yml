@@ -54,13 +54,10 @@ activity_scan:
 # These options are used to define limits to how many lands a player can own at any given time. This limit will
 # prevent the creation of new lands by the player, or transferal (automatically or not) of lands to said player.
 #
-# activity_scan: Scans to see if all lands have at least 1 player who is above the minimum acitvity requirements.
+# owner_limit: Determines if the server will have an limit on the number of lands a player can own.
 #
-# scan_period: Determines the number of minutes inbetween individual scans.
+# land_ownership_limit: Maximum number of lands a player can own.
 #
-# delay_on_enable: Determines how long, in minutes after a restart the plugin will begin the initial scan with a
-#                  minimum of 10 minutes.
-
 # =======================================
 owner_limit:
   enabled: true
