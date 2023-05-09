@@ -5,10 +5,12 @@ import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
 import io.curiositycore.landlord.util.config.ConfigManager;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.land.Land;
+import me.angeschossen.lands.api.player.LandPlayer;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -55,13 +57,19 @@ public class ActivityCheck implements Runnable{
 
     @Override
     public void run() {
+        //TODO: this is somewhat bad practice, want to move the land based methods into the lands util package.
         CoreprotectLookups coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
         int days = configManager.getInt("activity_scan","scan_period");
         int activityTimeRequirementInMinutes = configManager.getInt("activity_scan",
                                                                            "activity_requirement");
+        Collection<Land> landCollection = landsAPI.getLands();
 
-        landsAPI.getLands().forEach(land->{
+        //Guard check for if there are 0 lands on the server (edge case)
+        if(landCollection == null){
+            return;
+        }
 
+        landCollection.forEach(land->{
 
             ArrayList<UUID> playerArrayList = land.getTrustedPlayers().stream().collect(Collectors.toCollection(ArrayList::new));
 
@@ -72,9 +80,6 @@ public class ActivityCheck implements Runnable{
                 landMemberActivityMap.put(landMemberName,coreprotectLookups.playTimeLookup(landMemberName,days));
 
             }
-
-
-            //If there is even a single member whom meets the activity requirements, the land is not deleted.
 
             if(!landMemberActivityMap.values().stream().anyMatch(activityTime-> (activityTime >= activityTimeRequirementInMinutes))){
 
@@ -91,7 +96,9 @@ public class ActivityCheck implements Runnable{
      * @param landToDelete The <code>Land</code> to delete.
      */
     private void deleteLand(Land landToDelete){
-        Bukkit.getLogger().info("[Landlord] This is where the land would be deleted");
+
+        // Very rarely write comments... but this delete method... yeah this method stung... thanks LandsAPI...-_-
+        landToDelete.delete((LandPlayer) null);
         Bukkit.getLogger().info("[Landlord] The "+ landToDelete.getName()+" land has been deleted due to inactivity.");
     }
 }

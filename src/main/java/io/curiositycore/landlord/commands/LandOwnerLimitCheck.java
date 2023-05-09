@@ -6,6 +6,7 @@ import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
 import me.angeschossen.lands.api.land.Land;
+import me.angeschossen.lands.api.player.LandPlayer;
 import me.angeschossen.lands.api.role.Role;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
@@ -121,7 +122,7 @@ public class LandOwnerLimitCheck extends SubCommand {
                continue;
             }
 
-            numberOfActionsTaken =+1;
+            numberOfActionsTaken +=1;
             youngestLand = getYoungestLand(ownerUID);
             newOwnerUID = determineNewOwnerOfLand(ownerUID,youngestLand);
 
@@ -137,6 +138,13 @@ public class LandOwnerLimitCheck extends SubCommand {
      * @param trasferalLand The <code>Land</code> where the ownership transferal is being executed.
      */
     private void transferLandOwnership(UUID oldOwnerUID, UUID newOwnerUID, Land trasferalLand){
+        if(oldOwnerUID == newOwnerUID){
+            trasferalLand.delete((LandPlayer) null);
+            Bukkit.getServer().getLogger().info("[Landlord] " + trasferalLand.getName() + "has been deleted as" +
+                    " there were no alternative owners to transfer the claim to.");
+            return;
+        }
+
         trasferalLand.setOwner(newOwnerUID);
         String oldOwnerName = Bukkit.getServer().getOfflinePlayer(oldOwnerUID).getName();
         String newOwnerName = Bukkit.getServer().getOfflinePlayer(newOwnerUID).getName();
