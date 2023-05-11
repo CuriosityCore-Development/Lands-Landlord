@@ -194,20 +194,23 @@ public class LandOwnerLimitCheck extends SubCommand {
      */
     private Land getYoungestLand(UUID ownerUID){
         HashMap<Land,Long> landCreationTimeHashMap = new HashMap<>();
+        Map.Entry<Land,Long> minEntry = null;
+
         ownerHashMap.get(ownerUID).forEach(land->{
             landCreationTimeHashMap.put(land,land.getCreationTime());
         });
 
-        Map.Entry<Land,Long> minEntry = null;
         for(Map.Entry<Land, Long> entry : landCreationTimeHashMap.entrySet()){
             if(minEntry==null||entry.getValue().compareTo(minEntry.getValue()) < 0){
                 minEntry = entry;
             }
         }
+
         if(minEntry == null){
-            return null;
-        }
+            return null;}
+
         return minEntry.getKey();
+
     }
 
     /**

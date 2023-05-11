@@ -10,6 +10,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,6 +66,12 @@ public class CommandManager implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+
+        if(!(sender instanceof Player)){
+            Bukkit.getLogger().info("[Landlord] Commands cannot be execute from console. ");
+            return false;
+        }
+
         this.playerMessages = new PlayerMessages(Bukkit.getPlayer(sender.getName()));
 
         if(!subCommandHashMap.containsKey(args[0])){
