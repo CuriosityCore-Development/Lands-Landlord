@@ -1,6 +1,6 @@
 # Landlord Plugin
 <div align="center">
-  <img src="https://github.com/CuriosityCore-Development/Lands-Landlord/assets/117315226/7f7372bf-2e9a-4638-a896-b30885da0871" alt="CuriosityCore Logo Final" width="300">
+  <img src="https://github.com/CuriosityCore-Development/Lands-Landlord/assets/117315226/775ba4ff-fe57-4b98-809c-86bf140a2825" alt="CuriosityCore Logo Final" width="300">
 </div>
 
 The Landlord plugin is an addon to the Lands Plugin, which gives functionality for checking the upkeep costs of land claims, checking player activity and auto deleting as part of inactivity checks, and allows for ownership limits to be put into place in a more QoL manner than the base Lands Plugin. 
