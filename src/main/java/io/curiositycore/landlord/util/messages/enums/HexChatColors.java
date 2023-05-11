@@ -12,7 +12,11 @@ public enum HexChatColors {
     /**
      * The standard color used for the LandLord <code>Plugin</code> brackets.
      */
-    BRACKET_COLOR("#545454");
+    BRACKET_COLOR("#545454"),
+    /**
+     * The standard color for leaderboard titles.
+     */
+    LEADERBOARD_TITLE_COLOR("#FBA800");
 
     /**
      * The <code>TextColor</code> for the enum value.

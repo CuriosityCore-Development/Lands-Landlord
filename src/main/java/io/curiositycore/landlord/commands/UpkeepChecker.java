@@ -1,0 +1,69 @@
+package io.curiositycore.landlord.commands;
+
+import io.curiositycore.landlord.util.messages.PlayerMessages;
+import io.curiositycore.landlord.util.messages.enums.StandardChatComponents;
+import me.angeschossen.lands.api.LandsIntegration;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.*;
+
+/**
+ * Sends a scoreboard of <code>Land</code> upkeep values to the command sender via the <code>PlayerMessages</code> class.
+ */
+public class UpkeepChecker extends SubCommand{
+
+    /**
+     * The <code>LandsIntegration</code> instance, essentially the Lands API.
+     */
+    LandsIntegration landsAPI;
+
+    /**
+     * Constructor that initiates the Lands API.
+     * @param landsAPI The <code>LandsIntegration</code> instance, essentially the Lands API.
+     */
+    public UpkeepChecker(LandsIntegration landsAPI){
+        this.landsAPI = landsAPI;
+    }
+
+    @Override
+    public String getName() {
+        return "upkeeptop";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Messages the sender a top 10 list of land upkeeps";
+    }
+
+    @Override
+    public String getSyntax() {
+        return "/landlord upkeeptop";
+    }
+
+    @Override
+    public void perform(CommandSender player, String[] arguments) {
+        HashMap<String,Double> landUpkeepHashMap = new HashMap<>();
+        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(player.getName()));
+        int sentMessageAmount = 0;
+
+        landsAPI.getLands().stream().forEach(land->{landUpkeepHashMap.put(land.getName(),land.getUpkeepCosts());});
+        List<Map.Entry<String, Double>> landUpkeepList = new ArrayList<>(landUpkeepHashMap.entrySet());
+        Collections.sort(landUpkeepList, (o1, o2) -> o2.getValue().compareTo(Double.valueOf(o1.getValue())));
+        playerMessages.leaderboardHeaderCreation("Land Upkeep Summary");
+
+        for (Map.Entry<String, Double> entry : landUpkeepList) {
+
+            if(sentMessageAmount >= 10){
+                return;
+            }
+            sentMessageAmount += 1;
+            playerMessages.scoreboardMessage(String.valueOf(sentMessageAmount),
+                                                    entry.getKey().toString(),
+                                                    entry.getValue().toString());
+
+        }
+
+    }
+}

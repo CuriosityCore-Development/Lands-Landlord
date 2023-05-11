@@ -3,6 +3,7 @@ package io.curiositycore.landlord.commands;
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
+import me.angeschossen.lands.api.land.Land;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -13,8 +14,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Manager for any commands within the Landlord <code>Plugin</code>. Commands within Landlord begins with <i>"landlord"</i>.
@@ -87,8 +90,19 @@ public class CommandManager implements TabExecutor {
     @Override
     public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         List<String> suggestedTabs;
+        if(args.length == 0){
+            return null;
+        }
         if(args.length==1){
             return suggestedTabs = subCommandHashMap.keySet().stream().toList();
+        }
+
+        if(args[0].equalsIgnoreCase("activitycheck")){
+            suggestedTabs = new ArrayList<>();
+            landsAPI.getLands().stream().forEach(land->{
+                suggestedTabs.add(land.getName());
+            });
+            return suggestedTabs;
         }
         return null;
     }
@@ -100,7 +114,9 @@ public class CommandManager implements TabExecutor {
      */
     private HashMap<String, SubCommand> constructSubCommandHashMap(){
         HashMap<String,SubCommand> subCommandHashMap = new HashMap<>();
-        subCommandHashMap.put("ownerCheck",new LandOwnerLimitCheck(landlordPlugin,landsAPI,coreProtectAPI));
+        subCommandHashMap.put("ownercheck",new LandOwnerLimitCheck(landlordPlugin,landsAPI,coreProtectAPI));
+        subCommandHashMap.put("upkeeptop",new UpkeepChecker(landsAPI));
+        subCommandHashMap.put("activitycheck",new IndividualLandActivityChecker(landlordPlugin,landsAPI,coreProtectAPI));
         return subCommandHashMap;
     }
 }

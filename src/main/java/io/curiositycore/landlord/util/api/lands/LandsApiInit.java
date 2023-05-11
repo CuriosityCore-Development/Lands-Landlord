@@ -10,7 +10,7 @@ import org.bukkit.plugin.Plugin;
 public class LandsApiInit {
     /**
      * Gets the API for the Lands <code>Plugin</code> after checking all prerequisites.
-     * @param landlordPlugin The <code>Plugin</code> instance for the landlord Plugin.
+     * @param landlordPlugin The <code>Plugin</code> instance for the Landlord Plugin.
      * @return The <code>LandsIntegration</code> instance, essentially the Lands API.
      */
     public static LandsIntegration apiGetter(Plugin landlordPlugin){

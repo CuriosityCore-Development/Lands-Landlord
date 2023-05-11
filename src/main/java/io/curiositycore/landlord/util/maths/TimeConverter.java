@@ -45,4 +45,13 @@ public enum TimeConverter {
     public int toTicks(int value) {
         return value * ticks;
     }
+
+    /**
+     * Converts the specified from one time-conversion to another.
+     * @param timeToConvert The number of ticks in a singular value of the time unit to be converted to.
+     * @return The converted time. I.e. knowing how many days there are in 100 hours.
+     */
+    public int timeConversion(int timeToConvert){
+        return ticks / timeToConvert;
+    };
 }

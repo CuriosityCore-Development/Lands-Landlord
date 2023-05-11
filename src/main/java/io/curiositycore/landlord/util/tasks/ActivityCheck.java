@@ -40,6 +40,8 @@ public class ActivityCheck implements Runnable{
      * Instance of the <code>ConfigManager</code> to be utilised within this check.
      */
     ConfigManager configManager;
+    int days;
+    int activityTimeRequirementInMinutes;
 
     /**
      * Constructor which defines the Landlord <code>Plugin</code> instance.
@@ -53,15 +55,18 @@ public class ActivityCheck implements Runnable{
         this.coreProtectAPI = coreProtectAPI;
         this.configManager = landlordPlugin.getDefaultConfigManager();
         this.landMemberActivityMap = new HashMap<>();
+        this.days = configManager.getInt("activity_scan","scan_period");
+        this.activityTimeRequirementInMinutes = configManager.getInt("activity_scan","activity_requirement");
     }
 
     @Override
     public void run() {
         //TODO: this is somewhat bad practice, want to move the land based methods into the lands util package.
+        //TODO: bigger bad practice, move the ints into the class constants as every run you are regrabbing em from config. Terrible practice.
+
+
         CoreprotectLookups coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
-        int days = configManager.getInt("activity_scan","scan_period");
-        int activityTimeRequirementInMinutes = configManager.getInt("activity_scan",
-                                                                           "activity_requirement");
+
         Collection<Land> landCollection = landsAPI.getLands();
 
         //Guard check for if there are 0 lands on the server (edge case)
@@ -78,10 +83,10 @@ public class ActivityCheck implements Runnable{
                 String landMemberName = Bukkit.getServer().getOfflinePlayer(playerUID).getName();
 
                 landMemberActivityMap.put(landMemberName,coreprotectLookups.playTimeLookup(landMemberName,days));
-
+                
             }
 
-            if(!landMemberActivityMap.values().stream().anyMatch(activityTime-> (activityTime >= activityTimeRequirementInMinutes))){
+            if(!landMemberActivityMap.values().stream().anyMatch(activityTime-> (((int) Math.ceil((activityTime / 1000) / 60)) >= activityTimeRequirementInMinutes))){
 
                 deleteLand(land);
 
@@ -101,4 +106,6 @@ public class ActivityCheck implements Runnable{
         landToDelete.delete((LandPlayer) null);
         Bukkit.getLogger().info("[Landlord] The "+ landToDelete.getName()+" land has been deleted due to inactivity.");
     }
+
+
 }

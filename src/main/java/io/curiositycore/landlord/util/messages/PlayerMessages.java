@@ -17,6 +17,11 @@ public class PlayerMessages {
      */
     TextColor standardTitlePluginColor = HexChatColors.LANDLORD_STANDARD_TITLE_COLOR.getHexcode();
     /**
+     * Sets the <code>TextColor</code> of the Landlord <code>Plugin</code> leaderboard header to the
+     * defined <code>HexChatColor</code>.
+     */
+    TextColor standardLeaderboardHeaderColor = HexChatColors.LEADERBOARD_TITLE_COLOR.getHexcode();
+    /**
      * Sets the <code>TextColor</code> of the Landlord <code>Plugin</code> general messages to the
      * defined <code>HexChatColor</code>.
      */
@@ -92,5 +97,49 @@ public class PlayerMessages {
 
         return lampBracketedHeader;
 
+    }
+    /**
+     * Creates a header message to use as a seperating line.
+     * @param sectionHeaderTitle The header for the particular section that requires a header.
+     */
+    public void headerCreation(String sectionHeaderTitle){
+
+
+
+
+        Component headerScanName = Component.text(sectionHeaderTitle+ " ").color(standardTitlePluginColor);
+
+        Component headerMessageCompiled = StandardChatComponents.HEADER.component.
+                append(StandardChatComponents.PLUGIN_TITLE.component).
+                append(StandardChatComponents.SEPARATOR.component).
+                append(headerScanName).append(StandardChatComponents.HEADER.component);
+
+        playerToMessage.sendMessage(headerMessageCompiled);
+    }
+    /**
+     * Creates a header message to use as a separating line for leaderboards.
+     * @param sectionHeaderTitle The header for the particular leaderboard section header.
+     */
+    public void leaderboardHeaderCreation(String sectionHeaderTitle){
+
+        Component headerScanName = Component.text(sectionHeaderTitle+ " ").color(standardLeaderboardHeaderColor);
+
+        Component leaderboardMessageCompiled = StandardChatComponents.HEADER.component.
+                append(StandardChatComponents.PLUGIN_TITLE.component.color(standardLeaderboardHeaderColor)).
+                append(StandardChatComponents.SEPARATOR.component).
+                append(headerScanName).append(StandardChatComponents.HEADER.component);
+
+        playerToMessage.sendMessage(leaderboardMessageCompiled);
+    }
+
+    /**
+     * Creates a message for a single subject of a leaderboard.
+     * @param subjectRanking The <code>String</code> for the number ranking the subject has in the leaderboard.
+     * @param scoreableSubject The <code>String</code> for the leaderboard subject's name.
+     * @param score The <code>String</code> for the score the subject has within the leaderboard.
+     */
+    public void scoreboardMessage(String subjectRanking,String scoreableSubject, String score){
+        Component scoreboardMessageComponent = Component.text(subjectRanking+". "+scoreableSubject+", "+score).color(standardTextColor);
+        playerToMessage.sendMessage(scoreboardMessageComponent);
     }
 }

@@ -117,6 +117,8 @@ public final class Landlord extends JavaPlugin {
      * Registers all listeners within the Landlord <code>Plugin</code>
      */
     private void registerListeners(){
+        //TODO make this so it registers other events other than the ownership check (e.g. activity checks for land
+        // creation may be disabled)
         if(!ownershipLimitIsEnabled()){
             getLogger().info("[Landlord] Ownership limit not enabled in config. Listeners not registered!");
         }

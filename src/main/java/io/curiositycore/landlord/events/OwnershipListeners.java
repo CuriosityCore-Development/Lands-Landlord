@@ -1,7 +1,9 @@
 package io.curiositycore.landlord.events;
 
 import io.curiositycore.landlord.Landlord;
+import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
 import io.curiositycore.landlord.util.config.ConfigManager;
+import io.curiositycore.landlord.util.maths.TimeConverter;
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.events.LandCreateEvent;
@@ -49,6 +51,7 @@ public class OwnershipListeners implements Listener {
      */
     ConfigManager configManager;
 
+
     /**
      * /**
      * Constructor for the <code>Listener</code>. Ensures the various APIs are set along with config defined
@@ -74,8 +77,12 @@ public class OwnershipListeners implements Listener {
      */
     @EventHandler
     public void onCreateLand(LandCreateEvent landCreateEvent){
+        CoreprotectLookups coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
         LandPlayer initiatingLandPlayer = landCreateEvent.getLandPlayer();
         Player initiatingPlayer = initiatingLandPlayer.getPlayer();
+        int days = configManager.getInt("activity_scan","scan_period");
+        int activityTimeRequirementInMinutes = configManager.getInt("activity_scan",
+                "activity_requirement");
 
         this.playerMessages = new PlayerMessages(initiatingPlayer);
 
@@ -84,6 +91,14 @@ public class OwnershipListeners implements Listener {
                     " land ownership limit of: " + ownedLandsLimit);
             landCreateEvent.setCancelled(true);
         }
+
+        if(coreprotectLookups.playTimeLookup(initiatingPlayer.getName(),days) < TimeConverter.MINUTE.
+                              toTicks(activityTimeRequirementInMinutes)){
+            playerMessages.basicPluginPlayerMessage("Land creation cancelled, you have not met the minimum of " +
+                    activityTimeRequirementInMinutes + " minutes in the last " + days + " days!");
+            landCreateEvent.setCancelled(true);
+
+        };
 
     }
 
@@ -102,10 +117,18 @@ public class OwnershipListeners implements Listener {
      */
     @EventHandler
     public void onOwnershipTransfer(LandOwnerChangeEvent landOwnerChangeEvent){
+        //TODO this method currently does not work, fix awaiting API developer support.
+        Bukkit.getLogger().info("Test TEst Test");
         LandPlayer potentialNewOwner = landsAPI.getLandPlayer(landOwnerChangeEvent.getTargetUID());
-        Player initiatingPlayer = potentialNewOwner.getPlayer();
+        LandPlayer potentialOldOwner = landsAPI.getLandPlayer(landOwnerChangeEvent.getPlayerUID());
+        Player oldOwnerPlayer = potentialOldOwner.getPlayer();
+        //this.playerMessages = new PlayerMessages(oldOwnerPlayer);
+        Bukkit.getLogger().info(oldOwnerPlayer.getName());
+        //playerMessages.basicPluginPlayerMessage(potentialNewOwner.getUID().toString());
+        //playerMessages.basicPluginPlayerMessage(potentialOldOwner.getUID().toString());
 
-        this.playerMessages = new PlayerMessages(initiatingPlayer);
+
+
         if(landOwnerShipLimitCheck(potentialNewOwner)){
 
             landTransferalCancelMessage(landOwnerChangeEvent);
@@ -131,7 +154,7 @@ public class OwnershipListeners implements Listener {
             }
         }
 
-        return(ownedLands >= ownedLandsLimit);
+        return(ownedLands > ownedLandsLimit);
 
     }
 

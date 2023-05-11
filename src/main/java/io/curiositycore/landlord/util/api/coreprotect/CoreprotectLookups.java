@@ -2,6 +2,7 @@ package io.curiositycore.landlord.util.api.coreprotect;
 
 import io.curiositycore.landlord.util.maths.TimeConverter;
 import net.coreprotect.CoreProtectAPI;
+import org.bukkit.Bukkit;
 
 import java.util.List;
 import java.util.ListIterator;
@@ -25,26 +26,27 @@ public class CoreprotectLookups {
     }
 
     /**
-     * Getter for the amount of minutes played within a config-defined amount of time.
+     * Getter for the amount of minutes played within a config-defined amount of time. <i>Note that
+     * the method with the <code>CoreProtectAPI</code> for looking up sessions is based in seconds.</i>
      * @param playerName The name of the <code>Player</code> being looked up.
      * @param days The number of days in which the <code>Player</code>'s activity is to be looked up.
      * @return The number of minutes the <code>Player</code> has been active on the server, within the config-defined
      * amount of time.
      */
     public long playTimeLookup(String playerName,int days){
-        List<String[]> sessionList = coreProtectAPI.sessionLookup(playerName, TimeConverter.DAY.toTicks(days));
-        return getTotalTicksPlayed(sessionList);
+        List<String[]> sessionList = coreProtectAPI.sessionLookup(playerName, TimeConverter.SECOND.timeConversion(TimeConverter.DAY.toTicks(days)));
+        return getTotalMilliseconds(sessionList);
     }
 
     /**
-     * Getter for the number of Minecraft Ticks played within the config-defined amount of time looked up.
+     * Getter for the number of milliseconds played within the config-defined amount of time looked up.
      * @param sessionlist The <code>List</code> of lookups to be performed.
      * @return the number of Minecraft Ticks played.
      */
-    private long getTotalTicksPlayed(List<String[]> sessionlist){
+    private long getTotalMilliseconds(List<String[]> sessionlist){
         CoreProtectAPI.ParseResult sessionAction;
         CoreProtectAPI.ParseResult previousAction = null;
-        long totalTicks = 0;
+        long totalMilliseconds = 0;
         long timestamp;
         boolean isFirstAction = false;
         ListIterator<String[]> sessionListIterator = sessionlist.listIterator();
@@ -71,6 +73,7 @@ public class CoreprotectLookups {
 
 
             if(actionName == "login" && isFirstAction){
+                //Bukkit.getLogger().info("First Login: "+ String.valueOf(totalTicks));
                 timestamp = 0;
             }
             else if(actionName == "login"){
@@ -81,15 +84,18 @@ public class CoreprotectLookups {
             }
 
             previousAction = sessionAction;
-            totalTicks =+ timestamp;
+            totalMilliseconds += timestamp;
 
             if(previousActionName.equalsIgnoreCase(actionName) && !isFirstAction){
-                totalTicks =- timestamp;
+                totalMilliseconds -= timestamp;
                 continue;
             }
             isFirstAction = false;
+            //Bukkit.getLogger().info(String.valueOf(totalTicks));
 
         }
-        return totalTicks;
+        Bukkit.getLogger().info("Total of "+ (totalMilliseconds/1000/60) + "minutes");
+        return totalMilliseconds;
+
     }
 }

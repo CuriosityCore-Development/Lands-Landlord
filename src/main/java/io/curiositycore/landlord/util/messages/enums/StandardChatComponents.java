@@ -12,7 +12,7 @@ public enum StandardChatComponents {
     /**
      * The <code>String</code> and <code>TextColor</code> used for the Landlord <code>Plugin</code> title.
      */
-    PLUGIN_TITLE("Lamp", HexChatColors.LANDLORD_STANDARD_TITLE_COLOR.getHexcode()),
+    PLUGIN_TITLE("Landlord", HexChatColors.LANDLORD_STANDARD_TITLE_COLOR.getHexcode()),
     /**
      * The <code>String</code> and <code>TextColor</code> used for the Landlord <code>Plugin</code> initial square bracket.
      */

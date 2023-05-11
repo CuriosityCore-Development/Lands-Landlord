@@ -1,5 +1,6 @@
 package io.curiositycore.landlord.commands;
 
+import io.curiositycore.landlord.util.messages.PlayerMessages;
 import org.bukkit.command.CommandSender;
 
 /**
@@ -44,6 +45,7 @@ public abstract class SubCommand {
      */
     public abstract String getSyntax();
 
+    //TODO it might be worth adding player messages to this abstract class
     /**
      * Abstract method to represent the generalisation for what function the sub-command has when
      * executed by a player.
