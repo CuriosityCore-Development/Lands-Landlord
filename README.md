@@ -35,4 +35,4 @@ Simply copy the compiled JAR into your plugin folder.
 
 ### Prerequisites
 
-This Plugin is dependant on both the Lands Plugin and the Coreprotect Plugin. 
+To use this plugin, you will need to have the <a href="https://www.spigotmc.org/resources/lands-%E2%AD%95-land-claim-plugin-%E2%9C%85-grief-prevention-protection-gui-management-nations-wars-1-19-support.53313/">Lands</a> and <a href="https://www.spigotmc.org/resources/coreprotect.8631/">Coreprotect</a> plugins installed on your server.
