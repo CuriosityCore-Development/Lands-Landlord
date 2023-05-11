@@ -10,7 +10,8 @@ The Landlord plugin is an addon to the Lands Plugin, which gives functionality f
 - [Installation](#installation)
 - [Usage](#usage)
   - [Commands](#commands)
-- [License](#LICENCE)
+- [License](https://github.com/CuriosityCore-Development/Lands-Landlord/blob/master/LICENSE)
+
 
 ## Usage
 ### Automation
