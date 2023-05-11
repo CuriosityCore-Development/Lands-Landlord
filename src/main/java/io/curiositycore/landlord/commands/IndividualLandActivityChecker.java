@@ -20,19 +20,19 @@ public class IndividualLandActivityChecker extends SubCommand{
     /**
      * The <code>LandsIntegration</code> instance, essentially the Lands API.
      */
-    LandsIntegration landsAPI;
+    private LandsIntegration landsAPI;
     /**
      * Instance of the <code>CoreprotectLookups</code> class. Used for doing lookups via the <code>CoreProtectAPI</code>.
      */
-    CoreprotectLookups coreprotectLookups;
+    private CoreprotectLookups coreprotectLookups;
     /**
      * Instance of the <code>ConfigManager</code> being utilised within <code>Plugin</code> initialization..
      */
-    ConfigManager configManager;
+    private ConfigManager configManager;
     /**
      * Number of previous days to scan when conducting an activity lookup.
      */
-    int daysToScan;
+    private int daysToScan;
 
 
     /**

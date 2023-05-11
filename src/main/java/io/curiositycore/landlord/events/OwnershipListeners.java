@@ -25,31 +25,31 @@ public class OwnershipListeners implements Listener {
     /**
      * An instance of the <code>Landlord</code> class.
      */
-    JavaPlugin landlordPlugin;
+    private JavaPlugin landlordPlugin;
     /**
      * The <code>LandsIntegration</code> instance, essentially the Lands API, being utilised by the
      * <code>Listener</code>s. This will have been initialized <code>onEnable</code>.
      */
-    LandsIntegration landsAPI;
+    private LandsIntegration landsAPI;
 
     /**
      * The <code>CoreProtectAPI</code> instance being utilised by the <code>Listeners</code>. This will have been
      * initialized <code>onEnable</code>.
      */
-    CoreProtectAPI coreProtectAPI;
+    private CoreProtectAPI coreProtectAPI;
     /**
      * The limit on the amount of <code>Land</code> claims a <code>Player</code> can own.
      */
-    int ownedLandsLimit;
+    private int ownedLandsLimit;
     /**
      * An instance of the <code>PlayerMessages</code> class, used to define any messages sent to a <code>Player</code>
      * who triggers a <code>Listener</code> within this class.
      */
-    PlayerMessages playerMessages;
+    private PlayerMessages playerMessages;
     /**
      * Instance of the <code>ConfigManager</code> to be utilised within any <code>Listener</code> within this class.
      */
-    ConfigManager configManager;
+    private ConfigManager configManager;
 
 
     /**

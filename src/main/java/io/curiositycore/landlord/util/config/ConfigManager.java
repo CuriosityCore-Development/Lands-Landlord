@@ -11,7 +11,7 @@ public class ConfigManager {
     /**
      * The <code>FileConfiguration</code> instance of the Configuration file for the Landlord <code>Plugin</code>.
      */
-    FileConfiguration config;
+    private FileConfiguration config;
 
     /**
      * Constructor that utilises an instance of the Landlord <code>Plugin</code> to create a

@@ -22,15 +22,15 @@ public final class Landlord extends JavaPlugin {
     /**
      * The <code>CoreProtectAPI</code> instance being utilised within this <code>Plugin</code>.
      */
-    CoreProtectAPI coreProtectAPI;
+    private CoreProtectAPI coreProtectAPI;
     /**
      * The <code>CoreProtectAPI</code> instance being utilised within this <code>Plugin</code>.
      */
-    LandsIntegration landsAPI;
+    private LandsIntegration landsAPI;
     /**
      * Instance of the <code>ConfigManager</code> being utilised within <code>Plugin</code> initialization..
      */
-    ConfigManager configManager;
+    private ConfigManager configManager;
 
     @Override
     public void onEnable() {

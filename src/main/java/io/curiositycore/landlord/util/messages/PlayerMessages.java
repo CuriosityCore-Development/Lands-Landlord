@@ -15,22 +15,22 @@ public class PlayerMessages {
      * Sets the <code>TextColor</code> of the Landlord <code>Plugin</code> titles to the
      * defined <code>HexChatColor</code>.
      */
-    TextColor standardTitlePluginColor = HexChatColors.LANDLORD_STANDARD_TITLE_COLOR.getHexcode();
+    private TextColor standardTitlePluginColor = HexChatColors.LANDLORD_STANDARD_TITLE_COLOR.getHexcode();
     /**
      * Sets the <code>TextColor</code> of the Landlord <code>Plugin</code> leaderboard header to the
      * defined <code>HexChatColor</code>.
      */
-    TextColor standardLeaderboardHeaderColor = HexChatColors.LEADERBOARD_TITLE_COLOR.getHexcode();
+    private TextColor standardLeaderboardHeaderColor = HexChatColors.LEADERBOARD_TITLE_COLOR.getHexcode();
     /**
      * Sets the <code>TextColor</code> of the Landlord <code>Plugin</code> general messages to the
      * defined <code>HexChatColor</code>.
      */
-    TextColor standardTextColor = NamedTextColor.WHITE;
+    private TextColor standardTextColor = NamedTextColor.WHITE;
 
     /**
      * Instance of the <code>Player</code> whom the <code>Audience</code> of class messages are.
      */
-    Player playerToMessage;
+    private Player playerToMessage;
 
     /**
      * Constructor that sets the player to send messages to.

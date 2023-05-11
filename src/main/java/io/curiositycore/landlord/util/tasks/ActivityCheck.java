@@ -35,19 +35,19 @@ public class ActivityCheck implements Runnable{
      * and the activity they have had within the config-defined number of minutes within the config-defined number of
      * days to be checked, as a <code>Long</code>.
      */
-    HashMap<String,Long> landMemberActivityMap;
+    private HashMap<String,Long> landMemberActivityMap;
     /**
      * Instance of the <code>ConfigManager</code> to be utilised within this check.
      */
-    ConfigManager configManager;
+    private ConfigManager configManager;
     /**
      * Period in which the activity is compared over.
      */
-    int daysToScan;
+    private int daysToScan;
     /**
      * The activity time required of at least one player within a <code>Land</code> claim.
      */
-    int activityTimeRequirementInMinutes;
+    private int activityTimeRequirementInMinutes;
 
     /**
      * Constructor which defines the Landlord <code>Plugin</code> instance.

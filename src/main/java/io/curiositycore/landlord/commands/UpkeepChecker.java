@@ -17,7 +17,7 @@ public class UpkeepChecker extends SubCommand{
     /**
      * The <code>LandsIntegration</code> instance, essentially the Lands API.
      */
-    LandsIntegration landsAPI;
+    private LandsIntegration landsAPI;
 
     /**
      * Constructor that initiates the Lands API.

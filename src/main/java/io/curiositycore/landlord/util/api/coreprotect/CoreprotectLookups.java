@@ -15,7 +15,7 @@ public class CoreprotectLookups {
      * The <code>CoreProtectAPI</code> instance being utilised within this check. This will have been
      * initialized <code>onEnable</code>.
      */
-    CoreProtectAPI coreProtectAPI;
+    private CoreProtectAPI coreProtectAPI;
 
     /**
      * Constructor that defines the <code>CoreProtectAPI</code> instance for the class.

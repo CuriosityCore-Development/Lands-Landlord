@@ -28,27 +28,27 @@ public class CommandManager implements TabExecutor {
      * A <code>HashMap</code> defining the <code>SubCommand</code>s of <code>CommandManager</code> as the
      * <code>Value</code> and the in-game name of the <code>SubCommand</code> as the <code>Key</code>.
      */
-    HashMap<String,SubCommand> subCommandHashMap;
+    private HashMap<String,SubCommand> subCommandHashMap;
     /**
      * The <code>CoreProtectAPI</code> instance being utilised within the <code>CommandManager</code>. This will have
      * been initialized <code>onEnable()</code>.
      */
-    CoreProtectAPI coreProtectAPI;
+    private CoreProtectAPI coreProtectAPI;
     /**
      * The <code>LandsIntegration</code> instance, essentially the Lands API, being utilised within the
      * <code>CommandManager</code>. This will have been initialized <code>onEnable</code>.
      */
-    LandsIntegration landsAPI;
+    private LandsIntegration landsAPI;
     /**
      * An instance of the <code>Landlord</code> class.
      */
-    Landlord landlordPlugin;
+    private Landlord landlordPlugin;
     /**
      * An instance of the <code>PlayerMessages</code> class, used to define any messages sent to a <code>Player</code>
      * executing this <code>Command</code>
      */
 
-    PlayerMessages playerMessages;
+    private PlayerMessages playerMessages;
 
     /**
      * Constructor for the Manager, constructs the commandHashMap and initiates the various APIs and Landlord <code>Plugin</code>
