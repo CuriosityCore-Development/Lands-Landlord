@@ -73,7 +73,7 @@ public class CoreprotectLookups {
 
 
             if(actionName == "login" && isFirstAction){
-                //Bukkit.getLogger().info("First Login: "+ String.valueOf(totalTicks));
+
                 timestamp = 0;
             }
             else if(actionName == "login"){
@@ -91,7 +91,7 @@ public class CoreprotectLookups {
                 continue;
             }
             isFirstAction = false;
-            //Bukkit.getLogger().info(String.valueOf(totalTicks));
+
 
         }
         Bukkit.getLogger().info("Total of "+ (totalMilliseconds/1000/60) + "minutes");

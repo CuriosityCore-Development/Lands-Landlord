@@ -1,11 +1,11 @@
 package io.curiositycore.landlord.commands;
 
 import io.curiositycore.landlord.util.messages.PlayerMessages;
-import io.curiositycore.landlord.util.messages.enums.StandardChatComponents;
+
 import me.angeschossen.lands.api.LandsIntegration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+
 
 import java.util.*;
 
@@ -49,6 +49,7 @@ public class UpkeepChecker extends SubCommand{
         int sentMessageAmount = 0;
 
         landsAPI.getLands().stream().forEach(land->{landUpkeepHashMap.put(land.getName(),land.getUpkeepCosts());});
+
         List<Map.Entry<String, Double>> landUpkeepList = new ArrayList<>(landUpkeepHashMap.entrySet());
         Collections.sort(landUpkeepList, (o1, o2) -> o2.getValue().compareTo(Double.valueOf(o1.getValue())));
         playerMessages.leaderboardHeaderCreation("Land Upkeep Summary");
@@ -59,6 +60,8 @@ public class UpkeepChecker extends SubCommand{
                 return;
             }
             sentMessageAmount += 1;
+
+
             playerMessages.scoreboardMessage(String.valueOf(sentMessageAmount),
                                                     entry.getKey().toString(),
                                                     entry.getValue().toString());

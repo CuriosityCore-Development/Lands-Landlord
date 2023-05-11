@@ -125,8 +125,14 @@ public class LandOwnerLimitCheck extends SubCommand {
             numberOfActionsTaken +=1;
             youngestLand = getYoungestLand(ownerUID);
             newOwnerUID = determineNewOwnerOfLand(ownerUID,youngestLand);
-
+            if(newOwnerUID==null){
+                youngestLand.delete((LandPlayer) null);
+                Bukkit.getLogger().info("[Landlord] "+ youngestLand.getName() + "Was deleted as the owner was" +
+                        " over the ownership limit and there was no suitable replacement owner.");
+            }
             transferLandOwnership(ownerUID,newOwnerUID,youngestLand);
+
+
         }
         return numberOfActionsTaken;
     }
@@ -161,10 +167,19 @@ public class LandOwnerLimitCheck extends SubCommand {
     private UUID determineNewOwnerOfLand(UUID ownerUID, Land youngestLand){
         UUID newOwnerUID;
         ArrayList<UUID> trustedMemberCandidatesList = getTrustedMemberCandidates(youngestLand);
+
+        if(trustedMemberCandidatesList.contains(ownerUID)){
+            trustedMemberCandidatesList.remove(ownerUID);
+        }
+
+
+
         newOwnerUID = getIdealNewOwner(trustedMemberCandidatesList,youngestLand,ownerUID);
+
         if(newOwnerUID == null){
             newOwnerUID = getMostActiveLandMember(youngestLand,ownerUID);
         }
+
         return newOwnerUID;
 
     }

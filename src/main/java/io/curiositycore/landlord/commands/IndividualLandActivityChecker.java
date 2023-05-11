@@ -11,7 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 
 
-import java.util.HashMap;
+import java.util.*;
 
 /**
  * Checks for the individual activity of players from a command sender designated land.
@@ -33,7 +33,7 @@ public class IndividualLandActivityChecker extends SubCommand{
      * Number of previous days to scan when conducting an activity lookup.
      */
     int daysToScan;
-    HashMap<String , Long> activityTimeHashmap;
+
 
     /**
      * A <code>SubCommand</code> for sending a message detailing  activity (in minutes) for each player within a
@@ -67,13 +67,14 @@ public class IndividualLandActivityChecker extends SubCommand{
     @Override
     public void perform(CommandSender player, String[] arguments) {
         PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(player.getName()));
+        int rankingNumber = 0;
 
         if(arguments[1]== null){
             playerMessages.basicErrorMessage("Not enough arguments!",syntax);
             return;
         }
 
-        activityTimeHashmap = new HashMap<>();
+        HashMap<String,Long> activityTimeHashmap = new HashMap<>();
         Land landToScan = landsAPI.getLandByName(arguments[1]);
 
         if(landToScan == null){
@@ -84,13 +85,19 @@ public class IndividualLandActivityChecker extends SubCommand{
 
         landToScan.getTrustedPlayers().forEach(playerUID->{
             String playerName = Bukkit.getOfflinePlayer(playerUID).getName();
+
             activityTimeHashmap.put(playerName, (long) Math.ceil(coreprotectLookups.playTimeLookup(playerName,daysToScan)/1000.0/60.0));
         });
+
+        List<Map.Entry<String, Long>> landMemberActivityList = new ArrayList<>(activityTimeHashmap.entrySet());
+        Collections.sort(landMemberActivityList, (o1, o2) -> o2.getValue().compareTo(Long.valueOf(o1.getValue())));
+
         playerMessages.leaderboardHeaderCreation("Land Activity for: "+landToScan.getName());
-        //TODO before doing this loop add function to order it via activity time.
-        //TODO also add in the functionality for the increasing ranking.
-        for(String playerName : activityTimeHashmap.keySet()){
-            playerMessages.scoreboardMessage("",playerName,activityTimeHashmap.get(playerName)+" minutes.");
+
+
+        for(Map.Entry<String, Long> landMember : landMemberActivityList){
+            rankingNumber += 1;
+            playerMessages.scoreboardMessage(String.valueOf(rankingNumber),landMember.getKey(),landMember.getValue()+" minutes.");
         }
 
     }

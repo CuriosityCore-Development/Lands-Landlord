@@ -40,7 +40,13 @@ public class ActivityCheck implements Runnable{
      * Instance of the <code>ConfigManager</code> to be utilised within this check.
      */
     ConfigManager configManager;
-    int days;
+    /**
+     * Period in which the activity is compared over.
+     */
+    int daysToScan;
+    /**
+     * The activity time required of at least one player within a <code>Land</code> claim.
+     */
     int activityTimeRequirementInMinutes;
 
     /**
@@ -55,15 +61,12 @@ public class ActivityCheck implements Runnable{
         this.coreProtectAPI = coreProtectAPI;
         this.configManager = landlordPlugin.getDefaultConfigManager();
         this.landMemberActivityMap = new HashMap<>();
-        this.days = configManager.getInt("activity_scan","scan_period");
+        this.daysToScan = configManager.getInt("activity_scan","scan_period");
         this.activityTimeRequirementInMinutes = configManager.getInt("activity_scan","activity_requirement");
     }
 
     @Override
     public void run() {
-        //TODO: this is somewhat bad practice, want to move the land based methods into the lands util package.
-        //TODO: bigger bad practice, move the ints into the class constants as every run you are regrabbing em from config. Terrible practice.
-
 
         CoreprotectLookups coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
 
@@ -82,7 +85,11 @@ public class ActivityCheck implements Runnable{
 
                 String landMemberName = Bukkit.getServer().getOfflinePlayer(playerUID).getName();
 
-                landMemberActivityMap.put(landMemberName,coreprotectLookups.playTimeLookup(landMemberName,days));
+                if(landMemberActivityMap.containsKey(landMemberName)){
+                    continue;
+                }
+
+                landMemberActivityMap.put(landMemberName,coreprotectLookups.playTimeLookup(landMemberName, daysToScan));
                 
             }
 

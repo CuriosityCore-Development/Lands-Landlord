@@ -9,6 +9,7 @@ import io.curiositycore.landlord.util.maths.TimeConverter;
 import io.curiositycore.landlord.util.tasks.ActivityCheck;
 import me.angeschossen.lands.api.LandsIntegration;
 import net.coreprotect.CoreProtectAPI;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -44,7 +45,7 @@ public final class Landlord extends JavaPlugin {
 
         initializeChecks();
         registerListeners();
-        setRegisterCommandExecutors();
+        setCommandExecutors();
 
     }
 
@@ -66,18 +67,10 @@ public final class Landlord extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
 
         }
-
+        Bukkit.getLogger().info("CoreProtect API successfully initialized!");
         return coreProtectAPI;
     }
 
-    /**
-     * Getter for the instance of the <code>DefaultConfigManager</code> within this instance of the
-     * Landlord <code>Plugin</code>.
-     * @return The instance of the <code>DefaultConfigManager</code>.
-     */
-    public ConfigManager getDefaultConfigManager(){
-        return this.configManager;
-    }
     /**
      * Getter for the <code>LandsIntegration Instance</code> i.e. The API for the Lands <code>Plugin</code>. <br><i>(Disables the Plugin if null)</i>
      * @return The <code>LandsIntegration</code> instance.
@@ -89,8 +82,20 @@ public final class Landlord extends JavaPlugin {
         if(landsAPI == null){
             getServer().getPluginManager().disablePlugin(this);
         }
+
+        Bukkit.getLogger().info("Lands API successfully initialized!");
         return landsAPI;
     }
+
+    /**
+     * Getter for the instance of the <code>DefaultConfigManager</code> within this instance of the
+     * Landlord <code>Plugin</code>.
+     * @return The instance of the <code>DefaultConfigManager</code>.
+     */
+    public ConfigManager getDefaultConfigManager(){
+        return this.configManager;
+    }
+
 
     /**
      * Initializes the scheduled tasks for the landlord <code>Plugin</code>. <br><i>(Currently activity time and ownership)</i>
@@ -148,7 +153,7 @@ public final class Landlord extends JavaPlugin {
     /**
      * Sets the executors for the commands of the Landlord <code>Plugin</code>.
      */
-    private void setRegisterCommandExecutors(){
+    private void setCommandExecutors(){
         getCommand("landlord").setExecutor(new CommandManager(coreProtectAPI,landsAPI,this));
         getLogger().info("[Landlord] Command executors successfully set!");
     }

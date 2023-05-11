@@ -122,10 +122,8 @@ public class OwnershipListeners implements Listener {
         LandPlayer potentialNewOwner = landsAPI.getLandPlayer(landOwnerChangeEvent.getTargetUID());
         LandPlayer potentialOldOwner = landsAPI.getLandPlayer(landOwnerChangeEvent.getPlayerUID());
         Player oldOwnerPlayer = potentialOldOwner.getPlayer();
-        //this.playerMessages = new PlayerMessages(oldOwnerPlayer);
-        Bukkit.getLogger().info(oldOwnerPlayer.getName());
-        //playerMessages.basicPluginPlayerMessage(potentialNewOwner.getUID().toString());
-        //playerMessages.basicPluginPlayerMessage(potentialOldOwner.getUID().toString());
+
+
 
 
 
