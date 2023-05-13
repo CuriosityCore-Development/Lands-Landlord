@@ -7,6 +7,10 @@ import io.curiositycore.landlord.util.config.ConfigValueAddresses;
  */
 public enum ActivityScanSettings implements ConfigValueAddresses {
     /**
+     * The <code>boolean</code> value used to determine if the functionality of activity scans is enabled or not.
+     */
+    ACTIVITY_ENABLED("enabled"),
+    /**
      * The value used to determine the range in which activity is scanned. <i>(in days)</i>
      */
     ACTIVITY_SCAN_RANGE("activity_range"),
@@ -24,10 +28,13 @@ public enum ActivityScanSettings implements ConfigValueAddresses {
      * <i>(in minutes)</i>
      */
     ACTIVITY_REQUIREMENT("activity_requirement"),
+
     /**
-     * The <code>boolean</code> value used to determine if the functionality of activity scans is enabled or not.
+     * The value used to determine what time to add when repeat sessions are detected <i>(Usually caused by restarts
+     * and crashes)</i>
+     *
      */
-    ACTIVITY_ENABLED("enabled");
+    ACTIVITY_DEFAULT_SESSION_TIME("default_session_time");
     /**
      * The address of the config-value's section in the config file, as a <code>String</code>.
      */

@@ -6,6 +6,7 @@ import io.curiositycore.landlord.util.api.coreprotect.CoreprotectApiInit;
 import io.curiositycore.landlord.util.api.lands.LandsApiInit;
 import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
+import io.curiositycore.landlord.util.config.enums.OwnerLimitSettings;
 import io.curiositycore.landlord.util.maths.TimeUnit;
 import io.curiositycore.landlord.util.tasks.ActivityCheck;
 import me.angeschossen.lands.api.LandsIntegration;
@@ -147,7 +148,7 @@ public final class Landlord extends JavaPlugin {
      * @return A <code>boolean</code> representing the result of the check.
      */
     private boolean ownershipLimitIsEnabled(){
-        return (configManager.getBoolean("owner_limit","enabled"));
+        return configManager.getBoolean(OwnerLimitSettings.OWNER_LIMIT_ENABLED.getPathArray());
     }
 
     /**

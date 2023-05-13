@@ -1,7 +1,8 @@
-package io.curiositycore.landlord.commands;
+package io.curiositycore.landlord.commands.subcommands;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.lands.LandActivityChecker;
+import io.curiositycore.landlord.util.config.enums.OwnerLimitSettings;
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
@@ -60,7 +61,9 @@ public class LandOwnerLimitCheck extends SubCommand {
         this.landlordPlugin = landlordPlugin;
         this.landsAPI = landsAPI;
         this.coreProtectAPI = coreProtectAPI;
-        this.ownedLandsLimit = 3;
+        this.ownedLandsLimit = landlordPlugin.getDefaultConfigManager().getInt(OwnerLimitSettings.
+                                                                        OWNER_LIMIT.
+                                                                        getPathArray());
     }
     @Override
     public String getName() {
@@ -78,8 +81,11 @@ public class LandOwnerLimitCheck extends SubCommand {
     }
 
     @Override
-    public void perform(CommandSender player, String[] arguments) {
-        this.playerMessages = new PlayerMessages(Bukkit.getPlayer(player.getName()));
+    public void perform(CommandSender commandSender, String[] arguments) {
+        if(consoleExecutedCommand(commandSender)){
+            return;
+        }
+        this.playerMessages = new PlayerMessages(Bukkit.getPlayer(commandSender.getName()));
         this.ownerHashMap = getOwnerHashMap();
         HashMap<String, String> enforcedLandsMap = ownerLimitsEnforcer();
 

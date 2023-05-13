@@ -1,4 +1,4 @@
-package io.curiositycore.landlord.commands;
+package io.curiositycore.landlord.commands.subcommands;
 
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 
@@ -17,7 +17,7 @@ public class UpkeepChecker extends SubCommand{
     /**
      * The <code>LandsIntegration</code> instance, essentially the Lands API.
      */
-    private LandsIntegration landsAPI;
+    private final LandsIntegration landsAPI;
 
     /**
      * Constructor that initiates the Lands API.
@@ -43,12 +43,16 @@ public class UpkeepChecker extends SubCommand{
     }
 
     @Override
-    public void perform(CommandSender player, String[] arguments) {
+    public void perform(CommandSender commandSender, String[] arguments) {
+        if(consoleExecutedCommand(commandSender)){
+            return;
+        }
+
         HashMap<String,Double> landUpkeepHashMap = new HashMap<>();
-        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(player.getName()));
+        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(commandSender.getName()));
         int sentMessageAmount = 0;
 
-        landsAPI.getLands().stream().forEach(land->{landUpkeepHashMap.put(land.getName(),land.getUpkeepCosts());});
+        landsAPI.getLands().forEach(land->landUpkeepHashMap.put(land.getName(),land.getUpkeepCosts()));
 
         List<Map.Entry<String, Double>> landUpkeepList = new ArrayList<>(landUpkeepHashMap.entrySet());
         Collections.sort(landUpkeepList, (o1, o2) -> o2.getValue().compareTo(Double.valueOf(o1.getValue())));
@@ -63,7 +67,7 @@ public class UpkeepChecker extends SubCommand{
 
 
             playerMessages.leaderboardMessage(String.valueOf(sentMessageAmount),
-                                                    entry.getKey().toString(),
+                                                    entry.getKey(),
                                                     entry.getValue().toString());
 
         }

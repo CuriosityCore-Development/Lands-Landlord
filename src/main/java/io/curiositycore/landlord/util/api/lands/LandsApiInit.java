@@ -4,6 +4,8 @@ import me.angeschossen.lands.api.LandsIntegration;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import java.util.Objects;
+
 /**
  * Utility class for any actions taken using the <code>landsAPI</code>.
  */
@@ -14,23 +16,15 @@ public class LandsApiInit {
      * @return The <code>LandsIntegration</code> instance, essentially the Lands API.
      */
     public static LandsIntegration apiGetter(Plugin landlordPlugin){
-        LandsIntegration landsAPI = LandsIntegration.of(Bukkit.getServer().getPluginManager().getPlugin("landlord"));
+        try {
+            return LandsIntegration.of(Objects.requireNonNull(Bukkit.getServer().getPluginManager().getPlugin("landlord")));
 
-        if(landsAPI == null){
+        }
+        catch (NullPointerException nullPointerException){
             landlordPlugin.getLogger().severe("[Landlord] Failed to initialize the LandsAPI!");
             return null;
         }
-        return landsAPI;
-    }
-
-    /**
-     * Checks if the <code>LandsIntegration</code> instance <i>(landsAPI)</i> exists or not.
-     * @param landsAPI The <code>LandsIntegration</code> instance, essentially the Lands API.
-     * @return The <code>boolean</code> defining if the landsAPI exists or not.
-     */
-    private static boolean landsApiExists(LandsIntegration landsAPI){
-        return (landsAPI == null);
-
 
     }
+
 }

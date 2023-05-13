@@ -1,4 +1,4 @@
-package io.curiositycore.landlord.commands;
+package io.curiositycore.landlord.commands.subcommands;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
@@ -34,7 +34,10 @@ public class IndividualLandActivityChecker extends SubCommand{
      * Number of previous days to scan when conducting an activity lookup.
      */
     private int daysToScan;
-
+    /**
+     * Number of minutes to add to an activity scan if a session with a server crash is detected.
+     */
+    private int defaultTimeValue;
 
     /**
      * A <code>SubCommand</code> for sending a message detailing  activity (in minutes) for each player within a
@@ -48,6 +51,8 @@ public class IndividualLandActivityChecker extends SubCommand{
         this.coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
         this.configManager = new ConfigManager(landlord);
         this.daysToScan = this.configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
+        this.defaultTimeValue = this.configManager.getInt(ActivityScanSettings.ACTIVITY_DEFAULT_SESSION_TIME
+                                                                              .getPathArray());
     }
 
     @Override
@@ -66,12 +71,17 @@ public class IndividualLandActivityChecker extends SubCommand{
     }
 
     @Override
-    public void perform(CommandSender player, String[] arguments) {
-        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(player.getName()));
+    public void perform(CommandSender commandSender, String[] arguments) {
+
+        if(consoleExecutedCommand(commandSender)){
+            return;
+        }
+
+        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(commandSender.getName()));
         int rankingNumber = 0;
 
         if(arguments.length < 2){
-            playerMessages.basicErrorMessage("Not enough arguments!",syntax);
+            playerMessages.basicErrorMessage("Not enough arguments!","Try: "+syntax);
             return;
         }
 
@@ -87,7 +97,7 @@ public class IndividualLandActivityChecker extends SubCommand{
         landToScan.getTrustedPlayers().forEach(playerUID->{
             String playerName = Bukkit.getOfflinePlayer(playerUID).getName();
 
-            activityTimeHashmap.put(playerName, coreprotectLookups.playTimeLookup(playerName,daysToScan));
+            activityTimeHashmap.put(playerName, coreprotectLookups.playTimeLookup(playerName,daysToScan,defaultTimeValue));
         });
 
         List<Map.Entry<String, Long>> landMemberActivityList = new ArrayList<>(activityTimeHashmap.entrySet());

@@ -69,7 +69,7 @@ public class ActivityCheck implements Runnable{
 
     @Override
     public void run() {
-
+        int defaultTimeValue = this.configManager.getInt(ActivityScanSettings.ACTIVITY_DEFAULT_SESSION_TIME.getPathArray());
         CoreprotectLookups coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
 
         Collection<Land> landCollection = landsAPI.getLands();
@@ -91,7 +91,7 @@ public class ActivityCheck implements Runnable{
                     continue;
                 }
 
-                landMemberActivityMap.put(landMemberName,coreprotectLookups.playTimeLookup(landMemberName, daysToScan));
+                landMemberActivityMap.put(landMemberName,coreprotectLookups.playTimeLookup(landMemberName, daysToScan, defaultTimeValue));
                 
             }
 

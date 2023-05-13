@@ -3,6 +3,7 @@ package io.curiositycore.landlord.util.messages;
 import io.curiositycore.landlord.util.messages.enums.StandardChatComponents;
 import io.curiositycore.landlord.util.messages.enums.HexChatColors;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
@@ -82,7 +83,7 @@ public class PlayerMessages {
         Component clarificationComponent = Component.text(clarificationMessage).color(NamedTextColor.GRAY);
 
         Component compiledMessage = getLampBracketedHeader().
-                append(errorComponent.asComponent()).append(clarificationComponent);
+                append(errorComponent.asComponent()).append(Component.text(" ")).append(clarificationComponent);
 
         playerToMessage.sendMessage(compiledMessage);
     }

@@ -1,6 +1,10 @@
 package io.curiositycore.landlord.commands;
 
 import io.curiositycore.landlord.Landlord;
+import io.curiositycore.landlord.commands.subcommands.IndividualLandActivityChecker;
+import io.curiositycore.landlord.commands.subcommands.LandOwnerLimitCheck;
+import io.curiositycore.landlord.commands.subcommands.SubCommand;
+import io.curiositycore.landlord.commands.subcommands.UpkeepChecker;
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
 
@@ -28,21 +32,21 @@ public class CommandManager implements TabExecutor {
      * A <code>HashMap</code> defining the <code>SubCommand</code>s of <code>CommandManager</code> as the
      * <code>Value</code> and the in-game name of the <code>SubCommand</code> as the <code>Key</code>.
      */
-    private HashMap<String,SubCommand> subCommandHashMap;
+    private HashMap<String, SubCommand> subCommandHashMap;
     /**
      * The <code>CoreProtectAPI</code> instance being utilised within the <code>CommandManager</code>. This will have
      * been initialized <code>onEnable()</code>.
      */
-    private CoreProtectAPI coreProtectAPI;
+    private final  CoreProtectAPI coreProtectAPI;
     /**
      * The <code>LandsIntegration</code> instance, essentially the Lands API, being utilised within the
      * <code>CommandManager</code>. This will have been initialized <code>onEnable</code>.
      */
-    private LandsIntegration landsAPI;
+    private final LandsIntegration landsAPI;
     /**
      * An instance of the <code>Landlord</code> class.
      */
-    private Landlord landlordPlugin;
+    private final Landlord landlordPlugin;
 
 
     /**
@@ -97,14 +101,12 @@ public class CommandManager implements TabExecutor {
             return null;
         }
         if(args.length==1){
-            return suggestedTabs = subCommandHashMap.keySet().stream().toList();
+            return subCommandHashMap.keySet().stream().toList();
         }
 
         if(args[0].equalsIgnoreCase("activitycheck")){
             suggestedTabs = new ArrayList<>();
-            landsAPI.getLands().stream().forEach(land->{
-                suggestedTabs.add(land.getName());
-            });
+            landsAPI.getLands().forEach(land-> suggestedTabs.add(land.getName()));
             return suggestedTabs;
         }
         return null;

@@ -82,7 +82,7 @@ public class OwnershipListeners implements Listener {
         Player initiatingPlayer = initiatingLandPlayer.getPlayer();
         int days = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
         int timeRequirementInMinutes = configManager.getInt(ActivityScanSettings.ACTIVITY_REQUIREMENT.getPathArray());
-
+        int defaultTimeValue = configManager.getInt(ActivityScanSettings.ACTIVITY_DEFAULT_SESSION_TIME.getPathArray());
         this.playerMessages = new PlayerMessages(initiatingPlayer);
 
         if(landOwnerShipLimitCheck(initiatingLandPlayer)){
@@ -91,7 +91,7 @@ public class OwnershipListeners implements Listener {
             landCreateEvent.setCancelled(true);
         }
 
-        if(coreprotectLookups.playTimeLookup(initiatingPlayer.getName(),days) < timeRequirementInMinutes){
+        if(coreprotectLookups.playTimeLookup(initiatingPlayer.getName(),days, defaultTimeValue) < timeRequirementInMinutes){
             playerMessages.basicPluginPlayerMessage("Land creation cancelled, you have not met the minimum of " +
                     timeRequirementInMinutes + " minutes in the last " + days + " days!");
             landCreateEvent.setCancelled(true);

@@ -30,6 +30,9 @@
 #
 # scan_period: Determines the number of hours between individual scans.
 #
+# default_session_time: Determines how many minutes to add to a players activity in the case of game session in which
+# a server crash occured.
+#
 # delay_on_enable: Determines how long, in minutes after a restart the plugin will begin the initial scan with a
 #                  minimum of 10 minutes.
 
@@ -42,6 +45,8 @@ activity_scan:
   activity_range: 30
 
   scan_period: 1
+
+  default_session_time: 10
 
   delay_on_enable: 10
 

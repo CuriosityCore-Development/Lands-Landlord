@@ -135,10 +135,10 @@ public class LandActivityChecker {
         HashMap<UUID,Long> memberActivityMap = new HashMap<>();
 
         int days = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
-
+        int defaultTimeValue = this.configManager.getInt(ActivityScanSettings.ACTIVITY_DEFAULT_SESSION_TIME.getPathArray());
         for(UUID landMemberUID : landMemberArrayList){
             String landMemberName = Bukkit.getOfflinePlayer(landMemberUID).getName();
-            memberActivityMap.put(landMemberUID,coreprotectLookups.playTimeLookup(landMemberName,days));
+            memberActivityMap.put(landMemberUID,coreprotectLookups.playTimeLookup(landMemberName,days, defaultTimeValue));
         }
         return memberActivityMap;
     }
