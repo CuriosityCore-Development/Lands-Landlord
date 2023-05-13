@@ -2,6 +2,7 @@ package io.curiositycore.landlord.util.api.lands;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
+import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
 import me.angeschossen.lands.api.land.Land;
 import net.coreprotect.CoreProtectAPI;
@@ -133,7 +134,7 @@ public class LandActivityChecker {
     private HashMap<UUID, Long> getMemberActivityHashMap(CoreprotectLookups coreprotectLookups, ArrayList<UUID> landMemberArrayList) {
         HashMap<UUID,Long> memberActivityMap = new HashMap<>();
 
-        int days = configManager.getInt("activity_scan","activity_range");
+        int days = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
 
         for(UUID landMemberUID : landMemberArrayList){
             String landMemberName = Bukkit.getOfflinePlayer(landMemberUID).getName();

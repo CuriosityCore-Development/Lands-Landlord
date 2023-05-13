@@ -2,6 +2,7 @@ package io.curiositycore.landlord.util.tasks;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
+import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.land.Land;
@@ -47,7 +48,7 @@ public class ActivityCheck implements Runnable{
     /**
      * The activity time required of at least one player within a <code>Land</code> claim.
      */
-    private int activityTimeRequirementInMinutes;
+    private int timeRequirementInMinutes;
 
     /**
      * Constructor which defines the Landlord <code>Plugin</code> instance.
@@ -61,8 +62,9 @@ public class ActivityCheck implements Runnable{
         this.coreProtectAPI = coreProtectAPI;
         this.configManager = landlordPlugin.getDefaultConfigManager();
         this.landMemberActivityMap = new HashMap<>();
-        this.daysToScan = configManager.getInt("activity_scan","scan_period");
-        this.activityTimeRequirementInMinutes = configManager.getInt("activity_scan","activity_requirement");
+        this.daysToScan = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
+
+        this.timeRequirementInMinutes = configManager.getInt(ActivityScanSettings.ACTIVITY_REQUIREMENT.getPathArray());
     }
 
     @Override
@@ -93,7 +95,7 @@ public class ActivityCheck implements Runnable{
                 
             }
 
-            if(!landMemberActivityMap.values().stream().anyMatch(activityTime-> (((int) Math.ceil((activityTime / 1000) / 60)) >= activityTimeRequirementInMinutes))){
+            if(!landMemberActivityMap.values().stream().anyMatch(activityTime-> ((Math.toIntExact(activityTime)) >= timeRequirementInMinutes))){
 
                 deleteLand(land);
 

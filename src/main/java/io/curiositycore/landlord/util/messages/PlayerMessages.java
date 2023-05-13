@@ -23,7 +23,7 @@ public class PlayerMessages {
     private TextColor standardLeaderboardHeaderColor = HexChatColors.LEADERBOARD_TITLE_COLOR.getHexcode();
     /**
      * Sets the <code>TextColor</code> of the Landlord <code>Plugin</code> general messages to the
-     * defined <code>HexChatColor</code>.
+     * defined <code>NamedTextColor</code>.
      */
     private TextColor standardTextColor = NamedTextColor.WHITE;
 
@@ -104,9 +104,6 @@ public class PlayerMessages {
      */
     public void headerCreation(String sectionHeaderTitle){
 
-
-
-
         Component headerScanName = Component.text(sectionHeaderTitle+ " ").color(standardTitlePluginColor);
 
         Component headerMessageCompiled = StandardChatComponents.HEADER.component.
@@ -138,8 +135,19 @@ public class PlayerMessages {
      * @param scoreableSubject The <code>String</code> for the leaderboard subject's name.
      * @param score The <code>String</code> for the score the subject has within the leaderboard.
      */
-    public void scoreboardMessage(String subjectRanking,String scoreableSubject, String score){
-        Component scoreboardMessageComponent = Component.text(subjectRanking+". "+scoreableSubject+", "+score).color(standardTextColor);
-        playerToMessage.sendMessage(scoreboardMessageComponent);
+    public void leaderboardMessage(String subjectRanking, String scoreableSubject, String score){
+        Component leaderboardMessageComponent = Component.text(subjectRanking+". "+scoreableSubject+", "+score).color(standardTextColor);
+        playerToMessage.sendMessage(leaderboardMessageComponent);
+    }
+
+
+    /**
+     * Creates a message for a non-ranked leaderboard for a single subject.
+     * @param scoreableSubject The <code>String</code> for the leaderboard subject's name.
+     * @param score The <code>String</code> for the score the subject has within the leaderboard.
+     */
+    public void nonRankedLeaderboardMessage(String scoreableSubject, String score){
+        Component leaderboardMessageComponent = Component.text(scoreableSubject + ", "+score).color(standardTextColor);
+        playerToMessage.sendMessage(leaderboardMessageComponent);
     }
 }

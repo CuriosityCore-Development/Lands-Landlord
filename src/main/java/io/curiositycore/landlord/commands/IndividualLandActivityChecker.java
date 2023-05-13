@@ -2,6 +2,7 @@ package io.curiositycore.landlord.commands;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
+import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
@@ -46,7 +47,7 @@ public class IndividualLandActivityChecker extends SubCommand{
         this.landsAPI = landsAPI;
         this.coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
         this.configManager = new ConfigManager(landlord);
-        this.daysToScan = this.configManager.getInt("activity_scan","activity_range");
+        this.daysToScan = this.configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
     }
 
     @Override
@@ -69,7 +70,7 @@ public class IndividualLandActivityChecker extends SubCommand{
         PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(player.getName()));
         int rankingNumber = 0;
 
-        if(arguments[1]== null){
+        if(arguments.length < 2){
             playerMessages.basicErrorMessage("Not enough arguments!",syntax);
             return;
         }
@@ -86,7 +87,7 @@ public class IndividualLandActivityChecker extends SubCommand{
         landToScan.getTrustedPlayers().forEach(playerUID->{
             String playerName = Bukkit.getOfflinePlayer(playerUID).getName();
 
-            activityTimeHashmap.put(playerName, (long) Math.ceil(coreprotectLookups.playTimeLookup(playerName,daysToScan)/1000.0/60.0));
+            activityTimeHashmap.put(playerName, coreprotectLookups.playTimeLookup(playerName,daysToScan));
         });
 
         List<Map.Entry<String, Long>> landMemberActivityList = new ArrayList<>(activityTimeHashmap.entrySet());
@@ -97,7 +98,7 @@ public class IndividualLandActivityChecker extends SubCommand{
 
         for(Map.Entry<String, Long> landMember : landMemberActivityList){
             rankingNumber += 1;
-            playerMessages.scoreboardMessage(String.valueOf(rankingNumber),landMember.getKey(),landMember.getValue()+" minutes.");
+            playerMessages.leaderboardMessage(String.valueOf(rankingNumber),landMember.getKey(),landMember.getValue()+" minutes.");
         }
 
     }

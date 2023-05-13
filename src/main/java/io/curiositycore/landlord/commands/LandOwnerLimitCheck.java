@@ -81,7 +81,16 @@ public class LandOwnerLimitCheck extends SubCommand {
     public void perform(CommandSender player, String[] arguments) {
         this.playerMessages = new PlayerMessages(Bukkit.getPlayer(player.getName()));
         this.ownerHashMap = getOwnerHashMap();
-        ownerLimitsEnforcer();
+        HashMap<String, String> enforcedLandsMap = ownerLimitsEnforcer();
+
+        playerMessages.leaderboardHeaderCreation("Land Owner Limitation Check");
+
+        if(enforcedLandsMap.size()==0){
+            playerMessages.basicPluginPlayerMessage("All land claims adhered to ownership limitations");
+        }
+
+        enforcedLandsMap.keySet().forEach(landName -> playerMessages.nonRankedLeaderboardMessage(landName,enforcedLandsMap.get(landName)));
+
     }
 
     /**
@@ -112,9 +121,11 @@ public class LandOwnerLimitCheck extends SubCommand {
      * owner <code>HashMap</code>.
      * @return The <code>int</code> of the number of owners who have had lands removed.
      */
-    private int ownerLimitsEnforcer(){
+    private HashMap<String, String> ownerLimitsEnforcer(){
         int numberOfActionsTaken = 0;
+        HashMap<String, String> enforcedLandsMap = new HashMap<>();
         for(UUID ownerUID : ownerHashMap.keySet()){
+            boolean wasDeleted;
             Land youngestLand;
             UUID newOwnerUID;
 
@@ -125,16 +136,18 @@ public class LandOwnerLimitCheck extends SubCommand {
             numberOfActionsTaken +=1;
             youngestLand = getYoungestLand(ownerUID);
             newOwnerUID = determineNewOwnerOfLand(ownerUID,youngestLand);
-            if(newOwnerUID==null){
-                youngestLand.delete((LandPlayer) null);
-                Bukkit.getLogger().info("[Landlord] "+ youngestLand.getName() + "Was deleted as the owner was" +
-                        " over the ownership limit and there was no suitable replacement owner.");
+
+            wasDeleted = transferOrDeleteLandOwnership(ownerUID,newOwnerUID,youngestLand);
+
+            if(wasDeleted){
+                enforcedLandsMap.put(youngestLand.getName(),"Deleted");
+            } else {
+                enforcedLandsMap.put(youngestLand.getName(), "Ownership transfered from " +
+                        Bukkit.getOfflinePlayer(ownerUID).getName() +
+                        " to " + Bukkit.getOfflinePlayer(newOwnerUID).getName() + ".");
             }
-            transferLandOwnership(ownerUID,newOwnerUID,youngestLand);
-
-
         }
-        return numberOfActionsTaken;
+        return enforcedLandsMap;
     }
 
     /**
@@ -142,19 +155,24 @@ public class LandOwnerLimitCheck extends SubCommand {
      * @param oldOwnerUID The <code>UUID</code> of the current owner.
      * @param newOwnerUID The <code>UUID</code> of the <code>Player</code> to be given <code>Land</code> ownership.
      * @param trasferalLand The <code>Land</code> where the ownership transferal is being executed.
+     * @return The <code>boolean</code> that represents if the land was transferred or deleted.
      */
-    private void transferLandOwnership(UUID oldOwnerUID, UUID newOwnerUID, Land trasferalLand){
-        if(oldOwnerUID == newOwnerUID){
-            trasferalLand.delete((LandPlayer) null);
+    private boolean transferOrDeleteLandOwnership(UUID oldOwnerUID, UUID newOwnerUID, Land trasferalLand){
+        String oldOwnerName = Bukkit.getServer().getOfflinePlayer(oldOwnerUID).getName();
+        String newOwnerName = Bukkit.getServer().getOfflinePlayer(newOwnerUID).getName();
+        Bukkit.getServer().getLogger().info(oldOwnerName);
+        Bukkit.getServer().getLogger().info(newOwnerName);
+        if(oldOwnerName.equalsIgnoreCase(newOwnerName)){
+
             Bukkit.getServer().getLogger().info("[Landlord] " + trasferalLand.getName() + "has been deleted as" +
                     " there were no alternative owners to transfer the claim to.");
-            return;
+            trasferalLand.delete((LandPlayer) null);
+            return true;
         }
 
         trasferalLand.setOwner(newOwnerUID);
-        String oldOwnerName = Bukkit.getServer().getOfflinePlayer(oldOwnerUID).getName();
-        String newOwnerName = Bukkit.getServer().getOfflinePlayer(newOwnerUID).getName();
         Bukkit.getServer().getLogger().info("[Landlord] "+trasferalLand.getName()+ "has changed owner from " + oldOwnerName+" to "+ newOwnerName+"!");
+        return false;
     }
     /**
      * Getter for the <code>UUID</code> of the ideal candidate to take over a <code>Land</code> claim whose Owner is
@@ -190,26 +208,27 @@ public class LandOwnerLimitCheck extends SubCommand {
      * @param ownerUID The <code>UUID</code> of the <code>Land</code> owner who is currently above the config-defined
      * <code>Land</code> ownership limit.
      * @return The most recently created <code>Land</code> of a <code>Land</code> owner who is currently above the
-     * config-defined <code>Land</code> ownership limit.
+     * config-defined <code>Land</code> ownership limit. This should be the largest creation time within the method
+     * loop.
      */
     private Land getYoungestLand(UUID ownerUID){
         HashMap<Land,Long> landCreationTimeHashMap = new HashMap<>();
-        Map.Entry<Land,Long> minEntry = null;
+        Map.Entry<Land,Long> maxEntry = null;
 
         ownerHashMap.get(ownerUID).forEach(land->{
             landCreationTimeHashMap.put(land,land.getCreationTime());
         });
 
         for(Map.Entry<Land, Long> entry : landCreationTimeHashMap.entrySet()){
-            if(minEntry==null||entry.getValue().compareTo(minEntry.getValue()) < 0){
-                minEntry = entry;
+            if(maxEntry==null||entry.getValue().compareTo(maxEntry.getValue()) > 0){
+                maxEntry = entry;
             }
         }
 
-        if(minEntry == null){
+        if(maxEntry == null){
             return null;}
 
-        return minEntry.getKey();
+        return maxEntry.getKey();
 
     }
 

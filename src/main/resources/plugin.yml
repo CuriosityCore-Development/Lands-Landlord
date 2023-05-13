@@ -2,7 +2,7 @@ name: Landlord
 version: '${project.version}'
 main: io.curiositycore.landlord.Landlord
 api-version: 1.18
-softdepend: [Lands, CoreProtect]
+softdepend: [Lands, CoreProtect v21.3]
 authors: [ RazielMartelus96 ]
 description: Add-on for the Lands Plugin that allows for easier monitoring and enforcement of land activity / ownership limits.
 commands:
@@ -10,3 +10,5 @@ commands:
     usage: /landlord <manual_scan_type>
     permission: Landlord.use
     aliases: [lal]
+author: Curiosity Core Development
+website: https://github.com/CuriosityCore-Development/Lands-Landlord

@@ -3,7 +3,7 @@ package io.curiositycore.landlord.commands;
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
-import me.angeschossen.lands.api.land.Land;
+
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -18,7 +18,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 /**
  * Manager for any commands within the Landlord <code>Plugin</code>. Commands within Landlord begins with <i>"landlord"</i>.
@@ -43,12 +43,7 @@ public class CommandManager implements TabExecutor {
      * An instance of the <code>Landlord</code> class.
      */
     private Landlord landlordPlugin;
-    /**
-     * An instance of the <code>PlayerMessages</code> class, used to define any messages sent to a <code>Player</code>
-     * executing this <code>Command</code>
-     */
 
-    private PlayerMessages playerMessages;
 
     /**
      * Constructor for the Manager, constructs the commandHashMap and initiates the various APIs and Landlord <code>Plugin</code>
@@ -67,12 +62,13 @@ public class CommandManager implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
+        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(sender.getName()));
         if(!(sender instanceof Player)){
             Bukkit.getLogger().info("[Landlord] Commands cannot be execute from console. ");
             return false;
         }
 
-        this.playerMessages = new PlayerMessages(Bukkit.getPlayer(sender.getName()));
+
 
         if(!subCommandHashMap.containsKey(args[0])){
             playerMessages.basicErrorMessage("Executed command does not exist!",

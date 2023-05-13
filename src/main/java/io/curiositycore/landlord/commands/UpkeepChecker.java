@@ -62,7 +62,7 @@ public class UpkeepChecker extends SubCommand{
             sentMessageAmount += 1;
 
 
-            playerMessages.scoreboardMessage(String.valueOf(sentMessageAmount),
+            playerMessages.leaderboardMessage(String.valueOf(sentMessageAmount),
                                                     entry.getKey().toString(),
                                                     entry.getValue().toString());
 

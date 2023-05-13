@@ -4,6 +4,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+
+
 /**
  * Manager for the configuration file for the Landlord <code>Plugin</code>.
  */
@@ -34,6 +36,7 @@ public class ConfigManager {
         ConfigurationSection section = getConfigSection(sectionPath);
         return section.getInt(optionName);
     }
+
     /**
      * Getter for an <code>boolean</code> value from within a configuration section option.
      * @param sectionPath A <code>String</code> representing the path to the Configuration Section.
@@ -46,7 +49,31 @@ public class ConfigManager {
         ConfigurationSection section = getConfigSection(sectionPath);
         return section.getBoolean(optionName);
     }
+    /**
+     * Getter for an <code>int</code> value from within a configuration section option for <code>Enum</code>
+     * defined values.
+     * @param pathArray A <code>String[]</code> representing the sections value's path.
+     * Configuration Section.
+     *
+     * @return The <code>int</code> value from within a configuration section option.
+     */
+    public int getInt(String[] pathArray){
+        ConfigurationSection section = getConfigSection(pathArray[0]);
+        return section.getInt(pathArray[1]);
+    }
 
+    /**
+     * Getter for an <code>boolean</code> value from within a configuration section option for <code>Enum</code>
+     * defined values.
+     * @param pathArray A <code>String[]</code> representing the sections value's path.
+     * Configuration Section.
+     *
+     * @return The <code>boolean</code> value from within a configuration section option.
+     */
+    public boolean getBoolean(String[] pathArray){
+        ConfigurationSection section = getConfigSection(pathArray[0]);
+        return section.getBoolean(pathArray[1]);
+    }
 
     /**
      * Getter for the <code>ConfigurationSection</code> to be utilised by the configuration getter method that called it.
@@ -56,4 +83,6 @@ public class ConfigManager {
     private ConfigurationSection getConfigSection(String sectionPath){
         return config.getConfigurationSection(sectionPath);
     }
+
+
 }

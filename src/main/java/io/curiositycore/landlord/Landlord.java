@@ -4,8 +4,9 @@ import io.curiositycore.landlord.commands.CommandManager;
 import io.curiositycore.landlord.events.OwnershipListeners;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectApiInit;
 import io.curiositycore.landlord.util.api.lands.LandsApiInit;
+import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
-import io.curiositycore.landlord.util.maths.TimeConverter;
+import io.curiositycore.landlord.util.maths.TimeUnit;
 import io.curiositycore.landlord.util.tasks.ActivityCheck;
 import me.angeschossen.lands.api.LandsIntegration;
 import net.coreprotect.CoreProtectAPI;
@@ -108,11 +109,11 @@ public final class Landlord extends JavaPlugin {
         if(!configManager.getBoolean("activity_scan","enabled")){
             getLogger().info("[Landlord] Activity Scans not enabled in config. Scan Tasks not registered!");
         }
-        delayInMinutes = configManager.getInt("activity_scan","delay_on_enable");
-        periodInHours = configManager.getInt("activity_scan","scan_period");
+        delayInMinutes = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_DELAY.getPathArray());
 
-        delayInTicks = TimeConverter.MINUTE.toTicks(delayInMinutes);
-        periodInTicks = TimeConverter.HOUR.toTicks(periodInHours);
+        periodInHours = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_PERIOD.getPathArray());
+        delayInTicks = TimeUnit.MINUTE.toTicks(delayInMinutes);
+        periodInTicks = TimeUnit.HOUR.toTicks(periodInHours);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new ActivityCheck(landsAPI,coreProtectAPI,this),delayInTicks,periodInTicks);
         getLogger().info("[Landlord] Activity Scan tasks registered!");
@@ -122,8 +123,7 @@ public final class Landlord extends JavaPlugin {
      * Registers all listeners within the Landlord <code>Plugin</code>
      */
     private void registerListeners(){
-        //TODO make this so it registers other events other than the ownership check (e.g. activity checks for land
-        // creation may be disabled)
+
         if(!ownershipLimitIsEnabled()){
             getLogger().info("[Landlord] Ownership limit not enabled in config. Listeners not registered!");
         }

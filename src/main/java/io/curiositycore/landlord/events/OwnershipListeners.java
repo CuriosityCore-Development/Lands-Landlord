@@ -2,8 +2,8 @@ package io.curiositycore.landlord.events;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
+import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
-import io.curiositycore.landlord.util.maths.TimeConverter;
 import io.curiositycore.landlord.util.messages.PlayerMessages;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.events.LandCreateEvent;
@@ -80,9 +80,8 @@ public class OwnershipListeners implements Listener {
         CoreprotectLookups coreprotectLookups = new CoreprotectLookups(coreProtectAPI);
         LandPlayer initiatingLandPlayer = landCreateEvent.getLandPlayer();
         Player initiatingPlayer = initiatingLandPlayer.getPlayer();
-        int days = configManager.getInt("activity_scan","scan_period");
-        int activityTimeRequirementInMinutes = configManager.getInt("activity_scan",
-                "activity_requirement");
+        int days = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
+        int timeRequirementInMinutes = configManager.getInt(ActivityScanSettings.ACTIVITY_REQUIREMENT.getPathArray());
 
         this.playerMessages = new PlayerMessages(initiatingPlayer);
 
@@ -92,10 +91,9 @@ public class OwnershipListeners implements Listener {
             landCreateEvent.setCancelled(true);
         }
 
-        if(coreprotectLookups.playTimeLookup(initiatingPlayer.getName(),days) < TimeConverter.MINUTE.
-                              toTicks(activityTimeRequirementInMinutes)){
+        if(coreprotectLookups.playTimeLookup(initiatingPlayer.getName(),days) < timeRequirementInMinutes){
             playerMessages.basicPluginPlayerMessage("Land creation cancelled, you have not met the minimum of " +
-                    activityTimeRequirementInMinutes + " minutes in the last " + days + " days!");
+                    timeRequirementInMinutes + " minutes in the last " + days + " days!");
             landCreateEvent.setCancelled(true);
 
         };

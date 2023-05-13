@@ -1,6 +1,6 @@
 package io.curiositycore.landlord.util.api.coreprotect;
 
-import io.curiositycore.landlord.util.maths.TimeConverter;
+import io.curiositycore.landlord.util.maths.TimeUnit;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
 
@@ -34,8 +34,8 @@ public class CoreprotectLookups {
      * amount of time.
      */
     public long playTimeLookup(String playerName,int days){
-        List<String[]> sessionList = coreProtectAPI.sessionLookup(playerName, TimeConverter.SECOND.timeConversion(TimeConverter.DAY.toTicks(days)));
-        return getTotalMilliseconds(sessionList);
+        List<String[]> sessionList = coreProtectAPI.sessionLookup(playerName, TimeUnit.DAY.timeConversion(days,TimeUnit.SECOND));
+        return getTotalMilliseconds(sessionList)/60000;
     }
 
     /**
@@ -44,14 +44,14 @@ public class CoreprotectLookups {
      * @return the number of Minecraft Ticks played.
      */
     private long getTotalMilliseconds(List<String[]> sessionlist){
+        String actionName;
+        String previousActionName;
         CoreProtectAPI.ParseResult sessionAction;
         CoreProtectAPI.ParseResult previousAction = null;
         long totalMilliseconds = 0;
         long timestamp;
         boolean isFirstAction = false;
         ListIterator<String[]> sessionListIterator = sessionlist.listIterator();
-        String actionName;
-        String previousActionName;
 
         while(sessionListIterator.hasNext()){
 

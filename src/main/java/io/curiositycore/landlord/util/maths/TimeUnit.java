@@ -3,13 +3,13 @@ package io.curiositycore.landlord.util.maths;
 /**
  * Enum that holds  ticks into units of contextualised Time Units.
  */
-public enum TimeConverter {
+public enum TimeUnit {
     /**
      * The base time of a Minecraft Tick. <i>(Present for completeness and future proofing)</i>
      */
     TICK(1),
     /**
-     * The amount of Minecraft Ticks within 1 Second.
+     * The amount of Minecraft  Ticks within 1 Milisecond.
      */
     SECOND(20),
     /**
@@ -33,7 +33,7 @@ public enum TimeConverter {
      * Constructs a new time unit with the specified number of Minecraft Ticks.
      * @param ticks The number of Minecraft ticks for the specified Time Unit.
      */
-    TimeConverter(int ticks) {
+    TimeUnit(int ticks) {
         this.ticks = ticks;
     }
 
@@ -47,11 +47,13 @@ public enum TimeConverter {
     }
 
     /**
-     * Converts the specified from one time-conversion to another.
-     * @param timeToConvert The number of ticks in a singular value of the time unit to be converted to.
-     * @return The converted time. I.e. knowing how many days there are in 100 hours.
+     * Converts a specified amount of one <code>TimeUnit</code> to another.
+     * @param amountOfTimeUnit The amount of the <code>TimeUnit</code> to be converted from.
+     * @param timeToConvertTo The <code>TimeUnit</code> the value is to be converted to.
+     * @return The converted <code>TimeUnit</code> amount. <i>(e.g: 1 day becomes 24 hours)</i>
      */
-    public int timeConversion(int timeToConvert){
-        return ticks / timeToConvert;
-    };
+    public int timeConversion(int amountOfTimeUnit, TimeUnit timeToConvertTo){
+        return this.ticks *amountOfTimeUnit/timeToConvertTo.ticks;
+
+    }
 }
