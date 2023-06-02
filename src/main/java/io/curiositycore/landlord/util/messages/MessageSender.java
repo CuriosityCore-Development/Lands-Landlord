@@ -2,8 +2,8 @@ package io.curiositycore.landlord.util.messages;
 
 import io.curiositycore.landlord.util.messages.enums.StandardChatComponents;
 import io.curiositycore.landlord.util.messages.enums.HexChatColors;
+import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
@@ -11,7 +11,7 @@ import org.bukkit.entity.Player;
 /**
  * Provides methods to create and send different types of messages to a specified player.
  */
-public class PlayerMessages {
+public class MessageSender {
     /**
      * Sets the <code>TextColor</code> of the Landlord <code>Plugin</code> titles to the
      * defined <code>HexChatColor</code>.
@@ -31,14 +31,17 @@ public class PlayerMessages {
     /**
      * Instance of the <code>Player</code> whom the <code>Audience</code> of class messages are.
      */
-    private Player playerToMessage;
+    private Audience audienceToMessage;
 
+    public MessageSender(Player playerToMessage){
+        this.audienceToMessage = Audience.audience(playerToMessage);
+    }
     /**
      * Constructor that sets the player to send messages to.
-     * @param playerToMessage <code>Player</code> whom the focus of messages are.
+     * @param audienceToMessage <code>Player</code> whom the focus of messages are.
      */
-    public PlayerMessages(Player playerToMessage){
-        this.playerToMessage = playerToMessage;
+    public MessageSender(Audience audienceToMessage){
+        this.audienceToMessage = audienceToMessage;
     }
 
     /**
@@ -57,7 +60,7 @@ public class PlayerMessages {
                 append(StandardChatComponents.SEPARATOR.component).
                 append(titleMessageEnd);
 
-        playerToMessage.sendMessage(compiledMessage);
+        audienceToMessage.sendMessage(compiledMessage);
 
     }
 
@@ -70,7 +73,7 @@ public class PlayerMessages {
         Component compiledMessage = getLampBracketedHeader().
                 append(messageComponent.asComponent());
 
-        playerToMessage.sendMessage(compiledMessage);
+        audienceToMessage.sendMessage(compiledMessage);
     }
 
     /**
@@ -85,7 +88,7 @@ public class PlayerMessages {
         Component compiledMessage = getLampBracketedHeader().
                 append(errorComponent.asComponent()).append(Component.text(" ")).append(clarificationComponent);
 
-        playerToMessage.sendMessage(compiledMessage);
+        audienceToMessage.sendMessage(compiledMessage);
     }
     /**
      * Creates the bracketed "[LAMP]" for certain messages
@@ -112,7 +115,7 @@ public class PlayerMessages {
                 append(StandardChatComponents.SEPARATOR.component).
                 append(headerScanName).append(StandardChatComponents.HEADER.component);
 
-        playerToMessage.sendMessage(headerMessageCompiled);
+        audienceToMessage.sendMessage(headerMessageCompiled);
     }
     /**
      * Creates a header message to use as a separating line for leaderboards.
@@ -127,7 +130,7 @@ public class PlayerMessages {
                 append(StandardChatComponents.SEPARATOR.component).
                 append(headerScanName).append(StandardChatComponents.HEADER.component);
 
-        playerToMessage.sendMessage(leaderboardMessageCompiled);
+        audienceToMessage.sendMessage(leaderboardMessageCompiled);
     }
 
     /**
@@ -138,7 +141,7 @@ public class PlayerMessages {
      */
     public void leaderboardMessage(String subjectRanking, String scoreableSubject, String score){
         Component leaderboardMessageComponent = Component.text(subjectRanking+". "+scoreableSubject+", "+score).color(standardTextColor);
-        playerToMessage.sendMessage(leaderboardMessageComponent);
+        audienceToMessage.sendMessage(leaderboardMessageComponent);
     }
 
 
@@ -149,6 +152,6 @@ public class PlayerMessages {
      */
     public void nonRankedLeaderboardMessage(String scoreableSubject, String score){
         Component leaderboardMessageComponent = Component.text(scoreableSubject + ", "+score).color(standardTextColor);
-        playerToMessage.sendMessage(leaderboardMessageComponent);
+        audienceToMessage.sendMessage(leaderboardMessageComponent);
     }
 }

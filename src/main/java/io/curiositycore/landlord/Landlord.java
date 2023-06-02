@@ -2,16 +2,18 @@ package io.curiositycore.landlord;
 
 import io.curiositycore.landlord.commands.CommandManager;
 import io.curiositycore.landlord.events.OwnershipListeners;
+import io.curiositycore.landlord.events.war.WarEvents;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectApiInit;
 import io.curiositycore.landlord.util.api.lands.LandsApiInit;
-import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
+import io.curiositycore.landlord.util.config.settings.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
-import io.curiositycore.landlord.util.config.enums.OwnerLimitSettings;
+import io.curiositycore.landlord.util.config.settings.OwnerLimitSettings;
 import io.curiositycore.landlord.util.maths.TimeUnit;
 import io.curiositycore.landlord.util.tasks.ActivityCheck;
 import me.angeschossen.lands.api.LandsIntegration;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -129,6 +131,7 @@ public final class Landlord extends JavaPlugin {
             getLogger().info("[Landlord] Ownership limit not enabled in config. Listeners not registered!");
         }
         getServer().getPluginManager().registerEvents(new OwnershipListeners(this,landsAPI,coreProtectAPI),this);
+        getServer().getPluginManager().registerEvents(new WarEvents(landsAPI,coreProtectAPI,configManager),this);
         getLogger().info("[Landlord] Listeners successfully registered!");
     }
 
@@ -158,4 +161,5 @@ public final class Landlord extends JavaPlugin {
         getCommand("landlord").setExecutor(new CommandManager(coreProtectAPI,landsAPI,this));
         getLogger().info("[Landlord] Command executors successfully set!");
     }
+
 }

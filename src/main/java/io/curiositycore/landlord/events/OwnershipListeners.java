@@ -2,9 +2,9 @@ package io.curiositycore.landlord.events;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
-import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
+import io.curiositycore.landlord.util.config.settings.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
-import io.curiositycore.landlord.util.messages.PlayerMessages;
+import io.curiositycore.landlord.util.messages.MessageSender;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.events.LandCreateEvent;
 import me.angeschossen.lands.api.events.LandOwnerChangeEvent;
@@ -45,7 +45,7 @@ public class OwnershipListeners implements Listener {
      * An instance of the <code>PlayerMessages</code> class, used to define any messages sent to a <code>Player</code>
      * who triggers a <code>Listener</code> within this class.
      */
-    private PlayerMessages playerMessages;
+    private MessageSender messageSender;
     /**
      * Instance of the <code>ConfigManager</code> to be utilised within any <code>Listener</code> within this class.
      */
@@ -83,22 +83,23 @@ public class OwnershipListeners implements Listener {
         int days = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
         int timeRequirementInMinutes = configManager.getInt(ActivityScanSettings.ACTIVITY_REQUIREMENT.getPathArray());
         int defaultTimeValue = configManager.getInt(ActivityScanSettings.ACTIVITY_DEFAULT_SESSION_TIME.getPathArray());
-        this.playerMessages = new PlayerMessages(initiatingPlayer);
+        this.messageSender = new MessageSender(initiatingPlayer);
 
         if(landOwnerShipLimitCheck(initiatingLandPlayer)){
-            playerMessages.basicPluginPlayerMessage("Land creation cancelled, creation would take you over the current" +
+            messageSender.basicPluginPlayerMessage("Land creation cancelled, creation would take you over the current" +
                     " land ownership limit of: " + ownedLandsLimit);
             landCreateEvent.setCancelled(true);
         }
 
         if(coreprotectLookups.playTimeLookup(initiatingPlayer.getName(),days, defaultTimeValue) < timeRequirementInMinutes){
-            playerMessages.basicPluginPlayerMessage("Land creation cancelled, you have not met the minimum of " +
+            messageSender.basicPluginPlayerMessage("Land creation cancelled, you have not met the minimum of " +
                     timeRequirementInMinutes + " minutes in the last " + days + " days!");
             landCreateEvent.setCancelled(true);
 
         };
 
     }
+
 
     /**
      * Getter for the config-defined <code>Land</code> ownership limit.
@@ -116,14 +117,7 @@ public class OwnershipListeners implements Listener {
     @EventHandler
     public void onOwnershipTransfer(LandOwnerChangeEvent landOwnerChangeEvent){
         //TODO this method currently does not work, fix awaiting API developer support.
-        Bukkit.getLogger().info("Test TEst Test");
         LandPlayer potentialNewOwner = landsAPI.getLandPlayer(landOwnerChangeEvent.getTargetUID());
-        LandPlayer potentialOldOwner = landsAPI.getLandPlayer(landOwnerChangeEvent.getPlayerUID());
-        Player oldOwnerPlayer = potentialOldOwner.getPlayer();
-
-
-
-
 
         if(landOwnerShipLimitCheck(potentialNewOwner)){
 
@@ -131,6 +125,8 @@ public class OwnershipListeners implements Listener {
 
             landOwnerChangeEvent.setCancelled(true);
         }
+
+        
 
     }
 
@@ -160,8 +156,9 @@ public class OwnershipListeners implements Listener {
      * ownership of a <code>Land </code> to another <code>Player</code>.
      */
     private void landTransferalCancelMessage(LandOwnerChangeEvent landOwnerChangeEvent){
+        this.messageSender = new MessageSender(landOwnerChangeEvent.getLandPlayer().getPlayer());
         if(landOwnerChangeEvent.getReason() == LandOwnerChangeEvent.Reason.DEFAULT){
-            playerMessages.basicPluginPlayerMessage("Transfer cancelled as transfer would cause new owner to be" +
+            messageSender.basicPluginPlayerMessage("Transfer cancelled as transfer would cause new owner to be" +
                     "over their land ownership limit.");
             return;
         }

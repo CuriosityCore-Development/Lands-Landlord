@@ -2,8 +2,8 @@ package io.curiositycore.landlord.commands.subcommands;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.lands.LandActivityChecker;
-import io.curiositycore.landlord.util.config.enums.OwnerLimitSettings;
-import io.curiositycore.landlord.util.messages.PlayerMessages;
+import io.curiositycore.landlord.util.config.settings.OwnerLimitSettings;
+import io.curiositycore.landlord.util.messages.MessageSender;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.flags.type.Flags;
 import me.angeschossen.lands.api.land.Land;
@@ -48,7 +48,7 @@ public class LandOwnerLimitCheck extends SubCommand {
      * An instance of the <code>PlayerMessages</code> class, used to define any messages sent to a <code>Player</code>
      * executing this <code>SubCommand</code>
      */
-    private PlayerMessages playerMessages;
+    private MessageSender messageSender;
 
 
     /**
@@ -85,17 +85,17 @@ public class LandOwnerLimitCheck extends SubCommand {
         if(consoleExecutedCommand(commandSender)){
             return;
         }
-        this.playerMessages = new PlayerMessages(Bukkit.getPlayer(commandSender.getName()));
+        this.messageSender = new MessageSender(Bukkit.getPlayer(commandSender.getName()));
         this.ownerHashMap = getOwnerHashMap();
         HashMap<String, String> enforcedLandsMap = ownerLimitsEnforcer();
 
-        playerMessages.leaderboardHeaderCreation("Land Owner Limitation Check");
+        messageSender.leaderboardHeaderCreation("Land Owner Limitation Check");
 
         if(enforcedLandsMap.size()==0){
-            playerMessages.basicPluginPlayerMessage("All land claims adhered to ownership limitations");
+            messageSender.basicPluginPlayerMessage("All land claims adhered to ownership limitations");
         }
 
-        enforcedLandsMap.keySet().forEach(landName -> playerMessages.nonRankedLeaderboardMessage(landName,enforcedLandsMap.get(landName)));
+        enforcedLandsMap.keySet().forEach(landName -> messageSender.nonRankedLeaderboardMessage(landName,enforcedLandsMap.get(landName)));
 
     }
 

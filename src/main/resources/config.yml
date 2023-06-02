@@ -69,3 +69,24 @@ owner_limit:
 
   land_ownership_limit: 3
 
+# =======================================
+#           Custom War Options
+# =======================================
+#
+# These options are used to define the properties of the Custom War gamemodes.
+#
+# area_influence_requirement: How much influence (successful checks where there are more of one team than the other
+# within the area radius) is required to capture the area.
+#
+# =======================================
+custom_war:
+  enabled: true
+
+  area_influence_requirement: 30
+
+  area_capture_radius: 10
+
+  points_required_for_victory: 4
+
+  points_scored_from_area_capture: 1
+

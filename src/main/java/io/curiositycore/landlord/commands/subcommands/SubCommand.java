@@ -1,6 +1,5 @@
 package io.curiositycore.landlord.commands.subcommands;
 
-import io.curiositycore.landlord.util.messages.PlayerMessages;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

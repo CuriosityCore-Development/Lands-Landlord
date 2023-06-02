@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 
 /**
- * An enumeration of common phrases and components within plugin messages for ease of message creation.
+ * Enum for defining common phrases and components within plugin messages for ease of message creation.
  */
 public enum StandardChatComponents {
     //The name of the plugin is Lands Alt Military Plugin (LAMP)

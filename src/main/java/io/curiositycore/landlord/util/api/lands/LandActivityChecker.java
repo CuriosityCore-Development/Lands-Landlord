@@ -2,7 +2,7 @@ package io.curiositycore.landlord.util.api.lands;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
-import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
+import io.curiositycore.landlord.util.config.settings.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
 import me.angeschossen.lands.api.land.Land;
 import net.coreprotect.CoreProtectAPI;
@@ -121,6 +121,7 @@ public class LandActivityChecker {
         CoreprotectLookups coreprotectLookups = new CoreprotectLookups(this.coreProtectAPI);
         ArrayList<UUID> landMemberArrayList = new ArrayList<>(land.getTrustedPlayers());
         return getMemberActivityHashMap(coreprotectLookups, landMemberArrayList);
+
     }
 
     /**

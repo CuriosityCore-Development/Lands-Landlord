@@ -5,7 +5,7 @@ import io.curiositycore.landlord.commands.subcommands.IndividualLandActivityChec
 import io.curiositycore.landlord.commands.subcommands.LandOwnerLimitCheck;
 import io.curiositycore.landlord.commands.subcommands.SubCommand;
 import io.curiositycore.landlord.commands.subcommands.UpkeepChecker;
-import io.curiositycore.landlord.util.messages.PlayerMessages;
+import io.curiositycore.landlord.util.messages.MessageSender;
 import me.angeschossen.lands.api.LandsIntegration;
 
 import net.coreprotect.CoreProtectAPI;
@@ -66,7 +66,8 @@ public class CommandManager implements TabExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
 
-        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(sender.getName()));
+        MessageSender messageSender = new MessageSender(Bukkit.getPlayer(sender.getName()));
+
         if(!(sender instanceof Player)){
             Bukkit.getLogger().info("[Landlord] Commands cannot be execute from console. ");
             return false;
@@ -75,7 +76,7 @@ public class CommandManager implements TabExecutor {
 
 
         if(!subCommandHashMap.containsKey(args[0])){
-            playerMessages.basicErrorMessage("Executed command does not exist!",
+            messageSender.basicErrorMessage("Executed command does not exist!",
                                          "Only attempt execution of existing commands.");
             return false;
         }
@@ -85,7 +86,7 @@ public class CommandManager implements TabExecutor {
         if(args.length > 2){
             String syntax = subCommand.getSyntax();
 
-            playerMessages.basicErrorMessage("Too many arguements for the "+subCommand.getName()+" command."
+            messageSender.basicErrorMessage("Too many arguements for the "+subCommand.getName()+" command."
                                        ,"The please follow the command syntax: "+syntax);
             return false;
 

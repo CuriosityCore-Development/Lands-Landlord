@@ -2,9 +2,9 @@ package io.curiositycore.landlord.commands.subcommands;
 
 import io.curiositycore.landlord.Landlord;
 import io.curiositycore.landlord.util.api.coreprotect.CoreprotectLookups;
-import io.curiositycore.landlord.util.config.enums.ActivityScanSettings;
+import io.curiositycore.landlord.util.config.settings.ActivityScanSettings;
 import io.curiositycore.landlord.util.config.ConfigManager;
-import io.curiositycore.landlord.util.messages.PlayerMessages;
+import io.curiositycore.landlord.util.messages.MessageSender;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.land.Land;
 import net.coreprotect.CoreProtectAPI;
@@ -53,6 +53,7 @@ public class IndividualLandActivityChecker extends SubCommand{
         this.daysToScan = this.configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_RANGE.getPathArray());
         this.defaultTimeValue = this.configManager.getInt(ActivityScanSettings.ACTIVITY_DEFAULT_SESSION_TIME
                                                                               .getPathArray());
+
     }
 
     @Override
@@ -77,11 +78,11 @@ public class IndividualLandActivityChecker extends SubCommand{
             return;
         }
 
-        PlayerMessages playerMessages = new PlayerMessages(Bukkit.getPlayer(commandSender.getName()));
+        MessageSender messageSender = new MessageSender(Bukkit.getPlayer(commandSender.getName()));
         int rankingNumber = 0;
 
         if(arguments.length < 2){
-            playerMessages.basicErrorMessage("Not enough arguments!","Try: "+syntax);
+            messageSender.basicErrorMessage("Not enough arguments!","Try: "+syntax);
             return;
         }
 
@@ -89,7 +90,7 @@ public class IndividualLandActivityChecker extends SubCommand{
         Land landToScan = landsAPI.getLandByName(arguments[1]);
 
         if(landToScan == null){
-            playerMessages.basicErrorMessage("A land called '"+arguments[1]+"' does not exist!",
+            messageSender.basicErrorMessage("A land called '"+arguments[1]+"' does not exist!",
                     "Please only input existing lands.");
             return;
         }
@@ -103,12 +104,12 @@ public class IndividualLandActivityChecker extends SubCommand{
         List<Map.Entry<String, Long>> landMemberActivityList = new ArrayList<>(activityTimeHashmap.entrySet());
         Collections.sort(landMemberActivityList, (o1, o2) -> o2.getValue().compareTo(Long.valueOf(o1.getValue())));
 
-        playerMessages.leaderboardHeaderCreation("Land Activity for: "+landToScan.getName());
+        messageSender.leaderboardHeaderCreation("Land Activity for: "+landToScan.getName());
 
 
         for(Map.Entry<String, Long> landMember : landMemberActivityList){
             rankingNumber += 1;
-            playerMessages.leaderboardMessage(String.valueOf(rankingNumber),landMember.getKey(),landMember.getValue()+" minutes.");
+            messageSender.leaderboardMessage(String.valueOf(rankingNumber),landMember.getKey(),landMember.getValue()+" minutes.");
         }
 
     }

@@ -1,4 +1,4 @@
-package io.curiositycore.landlord.util.config.enums;
+package io.curiositycore.landlord.util.config.settings;
 
 import io.curiositycore.landlord.util.config.ConfigValueAddresses;
 /**
