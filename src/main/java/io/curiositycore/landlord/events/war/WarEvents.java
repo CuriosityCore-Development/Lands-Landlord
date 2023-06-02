@@ -175,19 +175,21 @@ public class WarEvents implements Listener {
         HashMap<TeamType,Integer> scoringWarTeamScoreMap = scoringWar.getTeamScoreMap();
         int newScore = scoringWarTeamScoreMap.get(teamThatScored)+ scoredPoints;
         scoringWarTeamScoreMap.put(teamThatScored,newScore);
+
         if(newScore >= configManager.getInt(CustomWarSettings.POINTS_REQUIRED_FOR_VICTORY.getPathArray())){
             this.warManager.endCustomWar(customWarScoreEvent.getAreaWarName(),customWarScoreEvent.getTeamThatScored());
             return;
         }
+
         scoringWar.getParticipantAudience().playSound(WarSounds.AREA_CAPTURED.getSound());
+
         try{
-        scoringWar.getParticipantMessageSender().basicPluginPlayerMessage(getTeamTypeName(teamThatScored,scoringWar)+" has scored a point!");
-        scoringWar.getParticipantMessageSender().basicPluginPlayerMessage("Current Score: "+scoringWarTeamScoreMap.get(teamThatScored));
+            scoringWar.getParticipantMessageSender().basicPluginPlayerMessage(getTeamTypeName(teamThatScored,scoringWar)+" has scored a point!");
+            scoringWar.getParticipantMessageSender().basicPluginPlayerMessage("Current Score: "+scoringWarTeamScoreMap.get(teamThatScored));
         }
         catch(NullPointerException exception){
             Bukkit.getLogger().info("Null lol get wrecked");
         }
-
 
     }
 

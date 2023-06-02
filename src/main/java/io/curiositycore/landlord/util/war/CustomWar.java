@@ -257,15 +257,15 @@ public class CustomWar {
      */
     private Audience constructAudienceForWar(Collection<UUID> attackingPlayerUIDs, Collection<UUID> defendingPlayerUIDs){
 
-        Player[] playerArray = new Player[attackingPlayerUIDs.size()+defendingPlayerUIDs.size()];
-        int index = 0;
+        ArrayList<Player> playerArray = new ArrayList<>();
         Player playerToAdd;
+
         for (UUID playerUID : attackingPlayerUIDs) {
             playerToAdd = Bukkit.getPlayer(playerUID);
 
             if(playerToAdd != null){
-                playerArray[index] = Bukkit.getPlayer(playerUID);
-                index++;
+                playerArray.add(Bukkit.getPlayer(playerUID));
+
             }
 
         }
@@ -274,13 +274,13 @@ public class CustomWar {
             playerToAdd = Bukkit.getPlayer(playerUID);
 
             if(playerToAdd != null){
-                playerArray[index] = Bukkit.getPlayer(playerUID);
-                index++;
+                playerArray.add(Bukkit.getPlayer(playerUID));
+
             }
 
         }
 
-        return Audience.audience(playerArray);
+        return Audience.audience(playerArray.toArray(new Player[0]));
     }
 
     /**
