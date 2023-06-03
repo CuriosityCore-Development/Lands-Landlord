@@ -1,21 +1,17 @@
 package io.curiositycore.landlord.util.war;
 
 import io.curiositycore.landlord.util.maths.ChunkManipulation;
-import io.curiositycore.landlord.util.messages.MessageSender;
 import io.curiositycore.landlord.util.war.participants.Participant;
-import io.curiositycore.landlord.util.war.participants.TeamType;
-import io.curiositycore.landlord.util.war.participants.combatstats.types.AttackerStatType;
-import io.curiositycore.landlord.util.war.participants.combatstats.types.CombatStatType;
-import io.curiositycore.landlord.util.war.participants.combatstats.types.DefenderStatType;
+import io.curiositycore.landlord.util.war.participants.combatstats.teams.CustomWarTeam;
+import io.curiositycore.landlord.util.war.participants.combatstats.teams.enums.TeamType;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.land.ChunkCoordinate;
 import me.angeschossen.lands.api.memberholder.MemberHolder;
 import me.angeschossen.lands.api.war.War;
 import net.coreprotect.CoreProtectAPI;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -57,22 +53,7 @@ public class WarManager {
      * @param warToAdd the <code>War</code> to use for constructing the <code>CustomWar</code> instance.
      */
     public void addWarToHashMap(War warToAdd){
-        MemberHolder attacker = warToAdd.getAttacker();
-        MemberHolder defender = warToAdd.getDefender();
-        Collection<UUID> attackerUIDs = attacker.getTrustedPlayers();
-        Collection<UUID> defenderUIDs = defender.getTrustedPlayers();
-        World currentWorld = landsAPI.getLandByName(attacker.getName()).getSpawn().getWorld();
-
-        Collection<ChunkCoordinate> attackerChunkCoords= landsAPI.
-                getLandByName(attacker.getName()).
-                getChunks(currentWorld);
-
-        Collection<ChunkCoordinate> defenderChunkCoords= landsAPI.
-                getLandByName(defender.getName()).
-                getChunks(currentWorld);
-
-        CustomWar customWarToAdd = new CustomWar(warToAdd,attackerUIDs,defenderUIDs,attackerChunkCoords,defenderChunkCoords);
-
+        CustomWar customWarToAdd = new CustomWar(warToAdd,this.landsAPI);
        this.warHashMap.put(customWarToAdd.getWarName(),customWarToAdd);
     }
 
@@ -86,93 +67,73 @@ public class WarManager {
     }
 
     /**
-     * Sets the overall <code>PlayerCombatStats</code> field within the chosen <code>CustomWar</code> instance.
-     * @param additionalScore The change in score to apply to the specified stat.
-     * @param combatStatType The type of combat statistic to be changed.
-     */
-    public void warStatChange(double additionalScore, CombatStatType combatStatType){
-        this.warHashMap.get(warHashMap).
-                        getAttackerStats().
-                        statHashMapChange(combatStatType,additionalScore);
-    }
-    /**
-     * Implements a change to the overall specific attacker statistic field within the chosen <code>CustomWar</code>
-     * instance.
-     * @param additionalScore The change in score to apply to the specified stat.
-     * @param attackerStatType The type of combat statistic to be changed.
-     */
-    public void attackerWarStatChange(double additionalScore, AttackerStatType attackerStatType){
-        this.warHashMap.get(warHashMap).
-                getAttackerStats().
-                changeSpecificStat(attackerStatType,additionalScore);
-    }
-    /**
-     * Implements a change to the overall specific defender statistic field within the chosen <code>CustomWar</code>
-     * instance.
-     * @param additionalScore The change in score to apply to the specified stat.
-     * @param defenderStatType The type of combat statistic to be changed.
-     */
-    public void defenderWarStatChange(double additionalScore, DefenderStatType defenderStatType){
-        this.warHashMap.get(warHashMap).
-                getDefenderStats().
-                changeSpecificStat(defenderStatType,additionalScore);
-    }
-
-    /**
      * Returns the <code>Participant</code> the <code>Player</code> is a Participating in.
      * @param targetPlayer The <code>Player</code> being checked.
      * @return The <code>CustomWar</code> the <code>Player</code> is a Participating in.
      */
-    public Participant participantTeam(Player targetPlayer){
+    public @NotNull Participant getCorrespondingParticipant(Player targetPlayer){
         UUID playerUID = targetPlayer.getUniqueId();
         for(CustomWar warToCheck: this.warHashMap.values()){
-            if(warHasPlayer(warToCheck,playerUID)){
-                return getParticipant(warToCheck,playerUID);
+            try{
+            return getParticipant(warToCheck,playerUID);
+
+            }
+            catch (Exception exception){
+                if(!exception.getClass().equals(NullPointerException.class)){
+                    exception.printStackTrace();
+                }
             }
 
         }
         return null;
-
     }
+
+    /**
+     * Gets the <code>CustomWar</code> the capture block, if applicable, was placed.
+     * @param block The block to that has been placed.
+     * @return The <code>CustomWar</code> in which the capture block was placed.
+     */
     public CustomWar getCaptureBlockWar(Block block){
         int[] chunkCoordinates = ChunkManipulation.chunkCheck(block.getX(), block.getZ());
+
         for(CustomWar customWar : this.warHashMap.values()){
-            if(isInWarChunks(chunkCoordinates,customWar.getAttackerChunks())|| isInWarChunks(chunkCoordinates,customWar.getDefenderChunks())){
+            String[] teamNameArray = new String[]{customWar.getPrimaryAttackerName(),customWar.getPrimaryDefenderName()};
+            HashMap<String, CustomWarTeam> customWarTeamMap = customWar.getTeamMap();
+
+            if(isInWarChunks(chunkCoordinates,customWarTeamMap.get(teamNameArray[0]).getChunkCoordinates())
+                    ||
+                    isInWarChunks(chunkCoordinates,customWarTeamMap.get(teamNameArray[1]).getChunkCoordinates())) {
                 return customWar;
             }
         }
         return null;
     }
 
-
+    /**
+     * Ends the specified <code>CustomWar</code> instance, unregistering any tasks and ending the underlying
+     * <code>War</code> instance.
+     * @param warName The name of the <code>CustomWar</code>.
+     * @param winningTeam The <code>TeamType</code> that won.
+     */
     public void endCustomWar(String warName, TeamType winningTeam){
         MemberHolder winningTeamMemberHolder;
         War warToEnd = this.warHashMap.get(warName).getAssociatedLandsWar();
-        if(winningTeam.equals(TeamType.ATTACKING_TEAM)){
-            winningTeamMemberHolder = warToEnd.getAttacker();
-        }
-        else{
-            winningTeamMemberHolder = warToEnd.getDefender();
-        }
+        winningTeamMemberHolder = winningTeam.getTeamMemberHolder(warToEnd);
 
         warToEnd.end(winningTeamMemberHolder,false,warToEnd.getReward(winningTeamMemberHolder));
+        this.warHashMap.remove(warName);
     }
 
+    /**
+     * Checks if the location being checked is in the specified <code>WarCoordinate Collection</code>
+     * @param blockLocationArray
+     * @param warLandChunks
+     * @return
+     */
     private boolean isInWarChunks(int[] blockLocationArray,Collection<ChunkCoordinate> warLandChunks){
          return warLandChunks.stream().anyMatch(chunkCoordinate ->
                 Arrays.equals(new int[] {chunkCoordinate.getX(), chunkCoordinate.getZ()}, blockLocationArray)
         );
-    }
-    /**
-     * Checks to see if the <code>UUID</code> being checked belongs to a <code>Participant</code> of the
-     * <code>CustomWar</code> being checked.
-     * @param warToCheck The <code>CustomWar</code> being checked for participation.
-     * @param playerUID The <code>UUID</code> of the <code>Player</code> being checked.
-     * @return A <code>boolean</code> representing if the <code>UUID</code> belongs to a <code>Participant</code> of the
-     * <code>CustomWar</code>
-     */
-    private boolean warHasPlayer(CustomWar warToCheck, UUID playerUID){
-        return warToCheck.getAttackingPlayers().containsKey(playerUID) || warToCheck.getDefendingPlayers().containsKey(playerUID);
     }
 
     /**
@@ -182,9 +143,12 @@ public class WarManager {
      * @return The <code>CombatStats</code> for the requested <code>Participant</code>.
      */
     private Participant getParticipant(CustomWar customWar, UUID playerUID){
-        if(customWar.getAttackingPlayers().keySet().contains(playerUID)){
-            return customWar.getAttackingPlayers().get(playerUID);
+        String[] teamNameArray = new String[]{customWar.getPrimaryAttackerName(),customWar.getPrimaryDefenderName()};
+        HashMap<String,CustomWarTeam> customWarTeamHashmap = customWar.getTeamMap();
+
+        if(customWarTeamHashmap.get(teamNameArray[0]).getParticipantMap().get(playerUID) != null){
+            return customWarTeamHashmap.get(teamNameArray[0]).getParticipantMap().get(playerUID);
         }
-        return customWar.getDefendingPlayers().get(playerUID);
+        return customWarTeamHashmap.get(teamNameArray[1]).getParticipantMap().get(playerUID);
     }
 }

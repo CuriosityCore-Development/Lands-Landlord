@@ -1,6 +1,6 @@
 package io.curiositycore.landlord.util.war.scoring.areas.enums;
 
-import io.curiositycore.landlord.util.war.participants.TeamType;
+import io.curiositycore.landlord.util.war.participants.combatstats.teams.enums.TeamType;
 import org.jetbrains.annotations.Nullable;
 
 /**

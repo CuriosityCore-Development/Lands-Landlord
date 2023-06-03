@@ -2,12 +2,11 @@ package io.curiositycore.landlord.util.war.scoring.areas;
 
 import io.curiositycore.landlord.util.bars.AreaProgressBar;
 import io.curiositycore.landlord.util.war.CustomWar;
-import io.curiositycore.landlord.util.war.scoring.areas.enums.AreaInfluenceType;
 import io.curiositycore.landlord.util.war.scoring.areas.tasks.AreaControlChecker;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
-import java.util.HashMap;
+
 
 /**
  * An area within the lands of a <code>CustomWar</code> that can be captured by <code>Participant</code>s to
@@ -50,7 +49,7 @@ public class ControllableArea {
      */
     public void startCaptureChecks(){
         try{
-            this.progressBar.activateBossBars();
+            this.progressBar.activateBossBars(this.areaControlChecker.getsourceLocation());
 
         }
         catch(NullPointerException nullPointerException){

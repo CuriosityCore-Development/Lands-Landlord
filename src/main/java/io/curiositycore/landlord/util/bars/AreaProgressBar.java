@@ -7,12 +7,9 @@ import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Sound;
-import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.UUID;
 
 /**
  * The progress bar linked to an <code>ControllableAreaSource</code>, used to display attacker and defender
@@ -23,44 +20,48 @@ public class AreaProgressBar {
      * A <code>HashMap</code> containing the <code>BossBar</code> instances for the <code>ControllableAreaSource</code> as the
      * <code>Value</code> instances and the name of the team the bar is for as the <code>Key</code> instances.
      */
-    HashMap<String,BossBar> bossBarHashMap;
+    private final HashMap<String,BossBar> bossBarHashMap;
     /**
      * An instance of the <code>Audience</code> to which the <code>BossBar</code> instances relate to. <i>(It is
      * assumed that the boss bar will want to be shown universally to all war participants)</i>
      */
-    Audience bossBarAudience;
+    private final Audience bossBarAudience;
     /**
      * The name of the attacking participants.
      */
-    String attackerName;
+    private final String attackerName;
     /**
      * The name of the defending participants.
      */
-    String defenderName;
+    private final String defenderName;
+
+    private BukkitTask coordinatesBarTask;
+
 
     /**
      * Constructor which initialises the audience and team names.
      * @param currentWar The <code>CustomWar</code> instance for the war this area is related to.
      */
     public AreaProgressBar(CustomWar currentWar){
-        //TODO could be worth making a method.
-        Collection<UUID> attackingPlayerUIDs = currentWar.getAttackingPlayers().keySet();
-        Collection<UUID> defendingPlayerUIDs = currentWar.getDefendingPlayers().keySet();
-        Player[] participatingPlayersArray = playerArrayConstructor(attackingPlayerUIDs,defendingPlayerUIDs);
-        this.attackerName = currentWar.getAttackerName();
-        this.defenderName = currentWar.getDefenderName();
-        this.bossBarAudience = Audience.audience(participatingPlayersArray);
+        this.attackerName = currentWar.getPrimaryAttackerName();
+        this.defenderName = currentWar.getPrimaryDefenderName();
+        this.bossBarAudience = currentWar.getParticipantAudience();
         this.bossBarHashMap =bossBarConstructor();
+
     }
 
     /**
      * Shows the <code>BossBar</code> instances within the <code>bossBarHashMap</code> to the
      * <code>bossBarAudience</code>.
      */
-    public void activateBossBars(){
+    public void activateBossBars(Location areaSourceLocation){
         this.bossBarAudience.showBossBar(this.bossBarHashMap.get(attackerName));
         this.bossBarAudience.showBossBar(this.bossBarHashMap.get(defenderName));
-
+        this.bossBarAudience.sendActionBar(getActionBarComponent(areaSourceLocation));
+        this.coordinatesBarTask = Bukkit.getScheduler().runTaskTimer(Bukkit.getPluginManager().getPlugin("Landlord"), () -> {
+            Component actionBarComponent = getActionBarComponent(areaSourceLocation);
+            this.bossBarAudience.sendActionBar(actionBarComponent);
+        }, 0L, 20L);
     }
     /**
      * Hides the <code>BossBar</code> instances within the <code>bossBarHashMap</code> to the
@@ -70,7 +71,11 @@ public class AreaProgressBar {
         //TODO remove the debugging tries when checks for no players online are done
         try{
         this.bossBarAudience.hideBossBar(this.bossBarHashMap.get(attackerName));
-        this.bossBarAudience.hideBossBar(this.bossBarHashMap.get(defenderName));}
+        this.bossBarAudience.hideBossBar(this.bossBarHashMap.get(defenderName));
+        this.coordinatesBarTask.cancel();
+        this.bossBarAudience.sendActionBar(Component.text(""));
+
+        }
         catch (Exception ignored){}
 
     }
@@ -115,28 +120,9 @@ public class AreaProgressBar {
 
         return teamBossBarsHashMap;
     }
-
-    /**
-     * Constructs a <code>Player[]</code> for the entirety of the <code>Player</code> instances taking part within the
-     * <code>CustomWar</code>.
-     * @param attackingPlayerUIDs A <code>Collection</code> of UUID's for the participants of the attacking team.
-     * @param defendingPlayerUIDs A <code>Collection</code> of UUID's for the participants of the defending team.
-     * @return
-     */
-    private Player[] playerArrayConstructor(Collection<UUID> attackingPlayerUIDs, Collection<UUID> defendingPlayerUIDs){
-
-        Player[] playerArray = new Player[attackingPlayerUIDs.size()+defendingPlayerUIDs.size()];
-        int index = 0;
-        for (UUID playerUID : attackingPlayerUIDs) {
-            playerArray[index] = Bukkit.getPlayer(playerUID);
-            index++;
-        }
-
-        for (UUID playerUID : defendingPlayerUIDs) {
-            playerArray[index] = Bukkit.getPlayer(playerUID);
-            index++;
-        }
-
-        return playerArray;
+    private Component getActionBarComponent(Location location){
+        return Component.text("Capture Point Active: ["+location.getBlockX()+", "+location.getBlockY()+", "+location.getBlockZ()+"]");
     }
+
+
 }

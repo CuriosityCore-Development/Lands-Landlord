@@ -4,6 +4,7 @@ import io.curiositycore.landlord.events.custom.CustomWarScoreEvent;
 import io.curiositycore.landlord.util.bars.AreaProgressBar;
 import io.curiositycore.landlord.util.war.CustomWar;
 import io.curiositycore.landlord.util.war.participants.Participant;
+import io.curiositycore.landlord.util.war.participants.combatstats.teams.CustomWarTeam;
 import io.curiositycore.landlord.util.war.scoring.areas.enums.AreaInfluenceType;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -36,13 +37,13 @@ public class AreaControlChecker extends BukkitRunnable {
      * A <code>HashMap</code> with <code>OfflinePlayer</code> instance <code>Value</code>s and <code>Participant</code>
      * <code>Key</code>s for the attacking team.
      */
-    private HashMap<UUID,Participant> attackingPlayers;
+    private final HashMap<UUID,Participant> attackingPlayers;
 
     /**
      * A <code>HashMap</code> with <code>OfflinePlayer</code> instance <code>Value</code>s and <code>Participant</code>
      * <code>Key</code>s for the defending team.
      */
-    private HashMap<UUID,Participant> defendingPlayers;
+    private final HashMap<UUID,Participant> defendingPlayers;
 
     /**
      * A <code>HashMap</code> with <code>Float</code> instance <code>Value</code>s and <code>AreaInfluenceType</code>
@@ -62,16 +63,17 @@ public class AreaControlChecker extends BukkitRunnable {
      * @param sourceLocation The <code>Location</code> of the source's central point.
      */
     public AreaControlChecker(CustomWar currentWar, float requiredInfluence, int areaRadiusSquared, Location sourceLocation){
-
+        //TODO tidy up in future with less fields.
+        HashMap<String, CustomWarTeam> currentWarTeamMap = currentWar.getTeamMap();
+        this.teamNameArray = new String[]{currentWar.getPrimaryAttackerName(),currentWar.getPrimaryDefenderName()};
         this.sourceLocation = sourceLocation;
         this.areaRadiusSquared = areaRadiusSquared*areaRadiusSquared;
         this.areaInfluenceTypeMap = areaInfluenceTypeMapConstructor();
         this.requiredInfluence = requiredInfluence;
-        this.attackingPlayers = currentWar.getAttackingPlayers();
-        this.defendingPlayers = currentWar.getDefendingPlayers();
+        this.attackingPlayers = currentWarTeamMap.get(currentWar.getPrimaryAttackerName()).getParticipantMap();
+        this.defendingPlayers = currentWarTeamMap.get(currentWar.getPrimaryDefenderName()).getParticipantMap();
         this.areaProgressBar = new AreaProgressBar(currentWar);
         this.currentWar = currentWar;
-        this.teamNameArray = new String[]{currentWar.getAttackerName(), currentWar.getDefenderName()};
     }
     @Override
     public void run() {
@@ -113,7 +115,9 @@ public class AreaControlChecker extends BukkitRunnable {
     public AreaProgressBar getAreaProgressBar(){
         return this.areaProgressBar;
     }
-
+    public Location getsourceLocation(){
+        return this.sourceLocation;
+    }
     /**
      * Check to see how many <code>Participant</code> instances of a singular team are within the radius of the
      * <code>ControllableArea</code> being checked.

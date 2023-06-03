@@ -7,7 +7,7 @@ import io.curiositycore.landlord.util.sounds.WarSounds;
 import io.curiositycore.landlord.util.war.CustomWar;
 import io.curiositycore.landlord.util.war.WarManager;
 import io.curiositycore.landlord.util.war.participants.Participant;
-import io.curiositycore.landlord.util.war.participants.TeamType;
+import io.curiositycore.landlord.util.war.participants.combatstats.teams.enums.TeamType;
 import io.curiositycore.landlord.util.war.participants.combatstats.types.CombatStatType;
 import io.curiositycore.landlord.util.war.scoring.areas.sources.CaptureBlockSource;
 import me.angeschossen.lands.api.LandsIntegration;
@@ -243,8 +243,8 @@ public class WarEvents implements Listener {
         if(playerArray == null){
             return null;
         }
-            Participant targetParticipant = this.warManager.participantTeam(playerArray[0]);
-            Participant sourceParticipant = this.warManager.participantTeam(playerArray[1]);
+            Participant targetParticipant = this.warManager.getCorrespondingParticipant(playerArray[0]);
+            Participant sourceParticipant = this.warManager.getCorrespondingParticipant(playerArray[1]);
         try{
         if(!bothPlayersInTheSameWar(sourceParticipant.getCustomWarName(),targetParticipant.getCustomWarName())){
             return null;
@@ -285,10 +285,10 @@ public class WarEvents implements Listener {
      */
     private String getTeamTypeName(TeamType teamType,CustomWar customWar){
         if(teamType.equals(TeamType.ATTACKING_TEAM)){
-            return customWar.getAttackerName();
+            return customWar.getPrimaryAttackerName();
         }
         else if(teamType.equals(TeamType.DEFENDING_TEAM)){
-            return customWar.getDefenderName();
+            return customWar.getPrimaryDefenderName();
         }
         return null;
     }

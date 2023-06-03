@@ -1,6 +1,6 @@
 package io.curiositycore.landlord.events.custom;
 
-import io.curiositycore.landlord.util.war.participants.TeamType;
+import io.curiositycore.landlord.util.war.participants.combatstats.teams.enums.TeamType;
 import org.bukkit.event.Event;
 import org.bukkit.event.HandlerList;
 import org.jetbrains.annotations.NotNull;
