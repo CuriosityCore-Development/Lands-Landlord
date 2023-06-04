@@ -54,6 +54,10 @@
 
   <repositories>
       <repository>
+          <id>sonatype-snapshots</id>
+          <url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
+      </repository>
+      <repository>
           <id>papermc-repo</id>
           <url>https://repo.papermc.io/repository/maven-public/</url>
       </repository>
@@ -93,6 +97,12 @@
           <groupId>net.coreprotect</groupId>
           <artifactId>coreprotect</artifactId>
           <version>21.0</version>
+          <scope>provided</scope>
+      </dependency>
+      <dependency>
+          <groupId>com.magmaguy</groupId>
+          <artifactId>EliteMobs</artifactId>
+          <version>8.4.0-SNAPSHOT</version>
           <scope>provided</scope>
       </dependency>
   </dependencies>
