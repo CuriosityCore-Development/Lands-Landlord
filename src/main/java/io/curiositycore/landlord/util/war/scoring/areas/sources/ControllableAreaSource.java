@@ -56,6 +56,10 @@ public abstract class ControllableAreaSource {
         this.broadcastAreaCapture();
     }
 
+    public void updateAreaTimer(){
+        this.controllableArea.getProgressBar().updateBossBarAudience();
+    }
+
     /**
      * Abstract method defining the generalisation of setting the controllable area this source creates.
      * @param currentWar The <code>CustomWar</code> instance this source belongs to.

@@ -102,6 +102,10 @@ public class AreaProgressBar {
         this.bossBarHashMap.get(attackerName).name(Component.text(this.attackerName+" players in area: "+teamScores[0]));
         this.bossBarHashMap.get(defenderName).name(Component.text(this.defenderName+" players in area: "+teamScores[1]));
     }
+    public void updateBossBarAudience(){
+        this.bossBarAudience.showBossBar(this.bossBarHashMap.get(attackerName));
+        this.bossBarAudience.showBossBar(this.bossBarHashMap.get(defenderName));
+    }
 
     /**
      * Constructs the <code>HashMap</code> for the <code>BossBar</code> instances.

@@ -5,6 +5,7 @@ import io.curiositycore.landlord.util.war.participants.combatstats.teams.Attacki
 import io.curiositycore.landlord.util.war.participants.combatstats.teams.CustomWarTeam;
 import io.curiositycore.landlord.util.war.participants.combatstats.teams.DefendingCustomWarTeam;
 import io.curiositycore.landlord.util.war.participants.combatstats.teams.enums.TeamType;
+import io.curiositycore.landlord.util.war.scoring.areas.sources.CaptureBlockSource;
 import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.land.ChunkCoordinate;
 import me.angeschossen.lands.api.war.War;
@@ -33,6 +34,8 @@ public class CustomWar {
     private HashMap<String, CustomWarTeam> teamMap;
     private final HashMap<TeamType, Integer> teamScoreMap = new HashMap<>();
     private boolean isEnded = false;
+    private ArrayList<CaptureBlockSource> captureBlockSources = new ArrayList<>();
+
 
     /**
      * Constructor that initializes an <code>ArrayList</code> of <code>Player</code> instances, in
@@ -112,6 +115,23 @@ public class CustomWar {
     public Audience getParticipantAudience() {
         return this.participantAudience;
     }
+    //TODO you never unloaded the block source after capture u wally
+    public void addCaptureBlockSource(CaptureBlockSource captureBlockSourceToAdd){
+        this.captureBlockSources.add(captureBlockSourceToAdd);
+    }
+    public void setParticipantAudience(Player playerToAdd){
+
+        this.participantAudience = Audience.audience(this.participantAudience,playerToAdd);
+        try {
+            this.updateBossBars();
+        }
+        catch(Exception exception){
+            exception.printStackTrace();
+        }
+    }
+    public void updateBossBars(){
+        this.captureBlockSources.forEach(captureBlockSource -> captureBlockSource.updateAreaTimer());
+    }
 
     public boolean getIsEnded(){
         return this.isEnded;
@@ -181,8 +201,6 @@ public class CustomWar {
             this.teamScoreMap.put(teamType,0);
         }
     }
-    public void setParticipantAudience(Player playerToAdd){
-        this.participantAudience = Audience.audience(this.participantAudience,playerToAdd);
-    }
+
 
 }

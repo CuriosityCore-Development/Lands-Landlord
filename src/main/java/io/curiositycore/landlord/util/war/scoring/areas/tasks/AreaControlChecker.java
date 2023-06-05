@@ -14,6 +14,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.HashMap;
 import java.util.UUID;
 
+import static java.lang.Math.sqrt;
+
 /**
  * Controls the repeated checks within an <code>ControllableArea</code> that has been activated during a
  * <code>CustomWar</code>.
@@ -61,22 +63,22 @@ public class AreaControlChecker extends BukkitRunnable {
      * Constructor that initialises both the war
      * @param currentWar the <code>CurrentWar</code> instance that the Capture Block is tied to.
      * @param requiredInfluence The influence required to capture the area.
-     * @param areaRadiusSquared The radius around the source in which a <code>Participant</code> counts towards capture.
+     * @param areaRadius The radius around the source in which a <code>Participant</code> counts towards capture.
      * @param sourceLocation The <code>Location</code> of the source's central point.
      */
-    public AreaControlChecker(CustomWar currentWar, float requiredInfluence, int areaRadiusSquared, Location sourceLocation){
+    public AreaControlChecker(CustomWar currentWar, float requiredInfluence, int areaRadius, Location sourceLocation){
         //TODO tidy up in future with less fields.
         HashMap<String, CustomWarTeam> currentWarTeamMap = currentWar.getTeamMap();
         this.teamNameArray = new String[]{currentWar.getPrimaryAttackerName(),currentWar.getPrimaryDefenderName()};
         this.sourceLocation = sourceLocation;
-        this.areaRadiusSquared = areaRadiusSquared*areaRadiusSquared;
+        this.areaRadiusSquared = areaRadius*areaRadius;
         this.areaInfluenceTypeMap = areaInfluenceTypeMapConstructor();
         this.requiredInfluence = requiredInfluence;
         this.attackingPlayers = currentWarTeamMap.get(currentWar.getPrimaryAttackerName()).getParticipantMap();
         this.defendingPlayers = currentWarTeamMap.get(currentWar.getPrimaryDefenderName()).getParticipantMap();
         this.areaProgressBar = new AreaProgressBar(currentWar);
         this.currentWar = currentWar;
-        this.captureAreaEffect = new CaptureAreaEffect(sourceLocation,100,10);
+        this.captureAreaEffect = new CaptureAreaEffect(sourceLocation,100,areaRadius);
     }
     @Override
     public void run() {

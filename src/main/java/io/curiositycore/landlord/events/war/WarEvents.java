@@ -139,10 +139,20 @@ public class WarEvents implements Listener {
     //      blocks within the CustomWar object?
     @EventHandler
     public void placeCaptureFlag(CaptureFlagPlaceEvent captureFlagPlaceEvent){
+        if(captureFlagPlaceEvent.isCancelled()){
+            return;
+        }
+
+
         captureFlagPlaceEvent.setCancelled(true);
         Location location = captureFlagPlaceEvent.getPlayer().getPlayer().getLocation();
+        CustomWar customWar = warManager.getCaptureBlockWar(location);
+
+
+
         CaptureBlockSource captureBlockSource = new CaptureBlockSource(this.configManager,
-                location, warManager.getCaptureBlockWar(location));
+                location, customWar);
+        customWar.addCaptureBlockSource(captureBlockSource);
         captureBlockSource.startAreaTimer();
     }
 

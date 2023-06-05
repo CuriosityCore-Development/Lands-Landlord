@@ -45,7 +45,7 @@ public class ControllableArea {
         this.progressBar = areaControlChecker.getAreaProgressBar();
         this.captureAreaEffect = areaControlChecker.getCaptureAreaEffect();
     }
-    //TODO This is now displaying the bars, but not updating properly, something to do with it being cancelled.
+
 
     /**
      * Shows the <code>BossBar</code> instances of the <code>AreaProgressBar</code> to every applicable
@@ -66,6 +66,10 @@ public class ControllableArea {
         areaControlChecker.runTaskTimer(Bukkit.getPluginManager().getPlugin(name),20L,20L );
         captureAreaEffect.runTaskTimer(Bukkit.getPluginManager().getPlugin(name),20L,13L );
 
+    }
+
+    public AreaProgressBar getProgressBar(){
+        return this.progressBar;
     }
 
 

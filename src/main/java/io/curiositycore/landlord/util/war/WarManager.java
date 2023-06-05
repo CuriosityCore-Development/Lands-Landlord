@@ -10,7 +10,6 @@ import me.angeschossen.lands.api.memberholder.MemberHolder;
 import me.angeschossen.lands.api.war.War;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
@@ -35,6 +34,8 @@ public class WarManager {
      * <code>Value</code> and the name of the <code>CustomWar</code> as the <code>Key</code>.
      */
     protected HashMap<String, CustomWar> warHashMap;
+
+
 
     /**
      * Constructor for the Manager, initializes the primary <code>API</code> instances and the <code>HashMap</code> for
@@ -123,6 +124,10 @@ public class WarManager {
         warToEnd.end(winningTeamMemberHolder,false,warToEnd.getReward(winningTeamMemberHolder));
         this.warHashMap.remove(warName);
     }
+    public CustomWar getWarOfJoinedPlayer(UUID joinedPlayerUID){
+        return warHashMap.values().stream().filter(warToCheck -> warToCheck.getTeamMap().values().stream().anyMatch(
+                team -> team.getParticipantMap().containsKey(joinedPlayerUID))).findFirst().orElse(null);
+    }
 
     /**
      * Checks if the location being checked is in the specified <code>WarCoordinate Collection</code>
@@ -152,8 +157,5 @@ public class WarManager {
         return customWarTeamHashmap.get(teamNameArray[1]).getParticipantMap().get(playerUID);
     }
 
-    public CustomWar getWarOfJoinedPlayer(UUID joinedPlayerUID){
-        return warHashMap.values().stream().filter(warToCheck -> warToCheck.getTeamMap().values().stream().anyMatch(
-                team -> team.getParticipantMap().containsKey(joinedPlayerUID))).findFirst().orElse(null);
-    }
+
 }
