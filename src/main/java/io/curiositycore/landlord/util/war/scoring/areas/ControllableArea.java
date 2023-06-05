@@ -3,6 +3,7 @@ package io.curiositycore.landlord.util.war.scoring.areas;
 import io.curiositycore.landlord.util.bars.AreaProgressBar;
 import io.curiositycore.landlord.util.war.CustomWar;
 import io.curiositycore.landlord.util.war.scoring.areas.tasks.AreaControlChecker;
+import io.curiositycore.landlord.util.war.scoring.areas.tasks.CaptureAreaEffect;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
@@ -23,6 +24,8 @@ public class ControllableArea {
      * The <code>AreaProgressBar</code> linked to this area, used to define how much influence teams have over the area.
      */
     AreaProgressBar progressBar;
+
+    CaptureAreaEffect captureAreaEffect;
     //TODO when the area source object is made, reduce parameters to just the area source
 
     /**
@@ -40,6 +43,7 @@ public class ControllableArea {
         this.areaControlChecker = new AreaControlChecker(currentWar,requiredInfluence,areaRadius,areaSourceLocation);
 
         this.progressBar = areaControlChecker.getAreaProgressBar();
+        this.captureAreaEffect = areaControlChecker.getCaptureAreaEffect();
     }
     //TODO This is now displaying the bars, but not updating properly, something to do with it being cancelled.
 
@@ -60,6 +64,7 @@ public class ControllableArea {
         }
         String name = Bukkit.getPluginManager().getPlugin("Landlord").getName();
         areaControlChecker.runTaskTimer(Bukkit.getPluginManager().getPlugin(name),20L,20L );
+        captureAreaEffect.runTaskTimer(Bukkit.getPluginManager().getPlugin(name),20L,13L );
 
     }
 

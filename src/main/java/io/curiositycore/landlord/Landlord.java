@@ -110,7 +110,7 @@ public final class Landlord extends JavaPlugin {
         int delayInTicks;
         int periodInTicks;
         if(!configManager.getBoolean("activity_scan","enabled")){
-            getLogger().info("[Landlord] Activity Scans not enabled in config. Scan Tasks not registered!");
+            getLogger().info("Activity Scans not enabled in config. Scan Tasks not registered!");
         }
         delayInMinutes = configManager.getInt(ActivityScanSettings.ACTIVITY_SCAN_DELAY.getPathArray());
 
@@ -119,7 +119,7 @@ public final class Landlord extends JavaPlugin {
         periodInTicks = TimeUnit.HOUR.toTicks(periodInHours);
 
         getServer().getScheduler().scheduleSyncRepeatingTask(this, new ActivityCheck(landsAPI,coreProtectAPI,this),delayInTicks,periodInTicks);
-        getLogger().info("[Landlord] Activity Scan tasks registered!");
+        getLogger().info("Activity Scan tasks registered!");
     }
 
     /**
@@ -128,11 +128,11 @@ public final class Landlord extends JavaPlugin {
     private void registerListeners(){
 
         if(!ownershipLimitIsEnabled()){
-            getLogger().info("[Landlord] Ownership limit not enabled in config. Listeners not registered!");
+            getLogger().info("Ownership limit not enabled in config. Listeners not registered!");
         }
         getServer().getPluginManager().registerEvents(new OwnershipListeners(this,landsAPI,coreProtectAPI),this);
         getServer().getPluginManager().registerEvents(new WarEvents(landsAPI,coreProtectAPI,configManager),this);
-        getLogger().info("[Landlord] Listeners successfully registered!");
+        getLogger().info("Listeners successfully registered!");
     }
 
     /**
@@ -142,7 +142,7 @@ public final class Landlord extends JavaPlugin {
     private ConfigManager configInitialisation(){
         getConfig().options().copyDefaults();
         saveDefaultConfig();
-        getLogger().info("[Landlord] Default Configuration File successfully initialised");
+        getLogger().info("Default Configuration File successfully initialised");
         return new ConfigManager(this);
     }
 
@@ -159,7 +159,7 @@ public final class Landlord extends JavaPlugin {
      */
     private void setCommandExecutors(){
         getCommand("landlord").setExecutor(new CommandManager(coreProtectAPI,landsAPI,this));
-        getLogger().info("[Landlord] Command executors successfully set!");
+        getLogger().info("Command executors successfully set!");
     }
 
 }

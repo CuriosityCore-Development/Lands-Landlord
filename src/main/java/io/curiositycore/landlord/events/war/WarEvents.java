@@ -14,8 +14,10 @@ import me.angeschossen.lands.api.LandsIntegration;
 import me.angeschossen.lands.api.events.war.WarDeclareEvent;
 import me.angeschossen.lands.api.events.war.WarEndEvent;
 import me.angeschossen.lands.api.events.war.WarStartEvent;
+import me.angeschossen.lands.api.events.war.captureflag.CaptureFlagPlaceEvent;
 import net.coreprotect.CoreProtectAPI;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Entity;
@@ -26,6 +28,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 
 import java.util.HashMap;
 
@@ -86,7 +89,6 @@ public class WarEvents implements Listener {
     public void warEvent(WarEndEvent warEndEvent){
 
     }
-    //TODO ensure that you investigate if the beacon can have different effects than vanilla.
     //TODO Add check to make sure only X caps can be placed at a time and only X distance away from each other
     //TODO Add check to make sure only outermost capture blocks are allowed to be placed OR just have it detect the
     //     Lands capture block.
@@ -98,6 +100,7 @@ public class WarEvents implements Listener {
      */
     @EventHandler
     public void placeBlock(BlockPlaceEvent blockPlaceEvent){
+        /*
         Block placedBlock = blockPlaceEvent.getBlockPlaced();
 
         if(!placedBlock.getType().equals(Material.BEACON)){
@@ -105,7 +108,7 @@ public class WarEvents implements Listener {
             return;
         }
 
-        CustomWar warForCaptureBlock = warManager.getCaptureBlockWar(placedBlock);
+        CustomWar warForCaptureBlock = warManager.getCaptureBlockWar(placedBlock.getLocation());
         if(warForCaptureBlock == null){
             Bukkit.getLogger().info("TestToSeeIfFucked");
             return;
@@ -115,14 +118,33 @@ public class WarEvents implements Listener {
                                                                        placedBlock.getLocation(), warForCaptureBlock);
         Bukkit.getLogger().info("Test to see if made it to the timer.");
         captureBlockSource.startAreaTimer();
-
+        */
 
     }
-    //TODO thank god
-    //@EventHandler
-    //public void placeCaptureFlag(CaptureFlagPlaceEvent captureFlagPlaceEvent){
+    @EventHandler
+    public void warParticipantLogOn(PlayerJoinEvent playerJoinEvent){
+        Player playerThatJoined = playerJoinEvent.getPlayer();
+        CustomWar warOfJoinedPlayer = this.warManager.getWarOfJoinedPlayer(playerThatJoined.getUniqueId());
+        if(warOfJoinedPlayer == null){
+            return;
+        }
+        this.warManager.getWar(warOfJoinedPlayer.getWarName()).setParticipantAudience(playerThatJoined);
+    }
 
-    //}
+
+    //TODO Make sure that you put in a check for how many cap blocks are placed (ensure you put a new field in
+    //     CustomWar), so the event can be cancelled if too many have been placed.
+
+    //TODO Look into updating the audiences for cap blocks for this war in future (might be worth storing the capture_
+    //      blocks within the CustomWar object?
+    @EventHandler
+    public void placeCaptureFlag(CaptureFlagPlaceEvent captureFlagPlaceEvent){
+        captureFlagPlaceEvent.setCancelled(true);
+        Location location = captureFlagPlaceEvent.getPlayer().getPlayer().getLocation();
+        CaptureBlockSource captureBlockSource = new CaptureBlockSource(this.configManager,
+                location, warManager.getCaptureBlockWar(location));
+        captureBlockSource.startAreaTimer();
+    }
 
     /**
      * Listener for any time an <code>EntityDamageByEntityEvent</code> triggers.<br><i>(This Listener ensures the

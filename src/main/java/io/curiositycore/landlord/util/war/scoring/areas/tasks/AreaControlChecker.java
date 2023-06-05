@@ -45,6 +45,8 @@ public class AreaControlChecker extends BukkitRunnable {
      */
     private final HashMap<UUID,Participant> defendingPlayers;
 
+    private final CaptureAreaEffect captureAreaEffect;
+
     /**
      * A <code>HashMap</code> with <code>Float</code> instance <code>Value</code>s and <code>AreaInfluenceType</code>
      * <code>Key</code>s to represent the amount of influence both teams have within the <code>ControllableArea</code>.
@@ -74,6 +76,7 @@ public class AreaControlChecker extends BukkitRunnable {
         this.defendingPlayers = currentWarTeamMap.get(currentWar.getPrimaryDefenderName()).getParticipantMap();
         this.areaProgressBar = new AreaProgressBar(currentWar);
         this.currentWar = currentWar;
+        this.captureAreaEffect = new CaptureAreaEffect(sourceLocation,100,10);
     }
     @Override
     public void run() {
@@ -83,7 +86,6 @@ public class AreaControlChecker extends BukkitRunnable {
         numberOfAttackers = playerCheck(attackingPlayers);
         numberOfDefenders = playerCheck(defendingPlayers);
         this.areaProgressBar.changeProgressBarTitles(new int[]{numberOfAttackers,numberOfDefenders});
-
         if (numberOfAttackers > numberOfDefenders) {
             areaInfluenceTypeToAdd = AreaInfluenceType.ATTACKER_INFLUENCE;
 
@@ -95,16 +97,18 @@ public class AreaControlChecker extends BukkitRunnable {
         try{
 
             updateInfluenceValue(areaInfluenceTypeToAdd);
+            this.captureAreaEffect.setAreaInfluenceType(areaInfluenceTypeToAdd);
             AreaInfluenceType capturingTeamType = getCapturingTeam();
             if (getCapturingTeam() != null) {
 
                 this.areaProgressBar.deactivateBossBars();
+                this.captureAreaEffect.cancel();
                 this.cancel();
                 Bukkit.getPluginManager().callEvent(new CustomWarScoreEvent(this.currentWar.getWarName(), getCapturingTeam().getTeamType()));
             }
         }
         catch(NullPointerException nullPointerException){
-
+            this.captureAreaEffect.setAreaInfluenceType(null);
         }
     }
 
@@ -115,6 +119,7 @@ public class AreaControlChecker extends BukkitRunnable {
     public AreaProgressBar getAreaProgressBar(){
         return this.areaProgressBar;
     }
+    public CaptureAreaEffect getCaptureAreaEffect(){return this.captureAreaEffect;}
     public Location getsourceLocation(){
         return this.sourceLocation;
     }

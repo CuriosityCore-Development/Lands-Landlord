@@ -116,7 +116,7 @@ public class OwnershipListeners implements Listener {
      */
     @EventHandler
     public void onOwnershipTransfer(LandOwnerChangeEvent landOwnerChangeEvent){
-        //TODO this method currently does not work, fix awaiting API developer support.
+
         LandPlayer potentialNewOwner = landsAPI.getLandPlayer(landOwnerChangeEvent.getTargetUID());
 
         if(landOwnerShipLimitCheck(potentialNewOwner)){

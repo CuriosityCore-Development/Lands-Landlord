@@ -9,6 +9,7 @@ import me.angeschossen.lands.api.land.ChunkCoordinate;
 import me.angeschossen.lands.api.memberholder.MemberHolder;
 import me.angeschossen.lands.api.war.War;
 import net.coreprotect.CoreProtectAPI;
+import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -90,11 +91,10 @@ public class WarManager {
 
     /**
      * Gets the <code>CustomWar</code> the capture block, if applicable, was placed.
-     * @param block The block to that has been placed.
      * @return The <code>CustomWar</code> in which the capture block was placed.
      */
-    public CustomWar getCaptureBlockWar(Block block){
-        int[] chunkCoordinates = ChunkManipulation.chunkCheck(block.getX(), block.getZ());
+    public CustomWar getCaptureBlockWar(Location location){
+        int[] chunkCoordinates = ChunkManipulation.chunkCheck(location.getBlockX(), location.getBlockZ());
 
         for(CustomWar customWar : this.warHashMap.values()){
             String[] teamNameArray = new String[]{customWar.getPrimaryAttackerName(),customWar.getPrimaryDefenderName()};
@@ -150,5 +150,10 @@ public class WarManager {
             return customWarTeamHashmap.get(teamNameArray[0]).getParticipantMap().get(playerUID);
         }
         return customWarTeamHashmap.get(teamNameArray[1]).getParticipantMap().get(playerUID);
+    }
+
+    public CustomWar getWarOfJoinedPlayer(UUID joinedPlayerUID){
+        return warHashMap.values().stream().filter(warToCheck -> warToCheck.getTeamMap().values().stream().anyMatch(
+                team -> team.getParticipantMap().containsKey(joinedPlayerUID))).findFirst().orElse(null);
     }
 }

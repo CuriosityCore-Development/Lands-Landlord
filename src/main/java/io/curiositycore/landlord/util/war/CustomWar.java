@@ -28,7 +28,7 @@ public class CustomWar {
      */
     private final String primaryDefenderName;
     private final War associatedLandsWar;
-    private final Audience participantAudience;
+    private Audience participantAudience;
     private final MessageSender participantMessageSender;
     private HashMap<String, CustomWarTeam> teamMap;
     private final HashMap<TeamType, Integer> teamScoreMap = new HashMap<>();
@@ -181,6 +181,8 @@ public class CustomWar {
             this.teamScoreMap.put(teamType,0);
         }
     }
-
+    public void setParticipantAudience(Player playerToAdd){
+        this.participantAudience = Audience.audience(this.participantAudience,playerToAdd);
+    }
 
 }
